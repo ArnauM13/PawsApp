@@ -17,27 +17,22 @@ export type DataViewLayout = 'list' | 'grid';
         }
       </ng-template>
 
-      <ng-template #list let-items>
+      <!-- <ng-template #list let-items>
         @for (item of items; track item.id) {
           <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
         }
-      </ng-template>
+      </ng-template> -->
 
       <ng-template #grid let-items>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         @for (item of items; track item.id) {
-          <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
         }
+        </div>
       </ng-template>
 
     </p-dataview>
-  `,
-  styles: [`
-    .empty-state {
-      padding: 2rem;
-      text-align: center;
-      color: #666;
-    }
-  `]
+  `
 })
 export class DataViewComponent<T> {
   dataItems = input<T[]>([]);

@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   imports: [CardComponent, CommonModule],
   template: `
     <fp-card
-      [style]="{ width: '25rem', overflow: 'hidden' }"
+      class="w-full"
       [contentTemplate]="contentTemplate"
       [footerTemplate]="footerTemplate">
 
@@ -27,9 +27,8 @@ import { CommonModule } from '@angular/common';
         </div>
       </ng-template>
     </fp-card>
-  `,
-  styles: [``]
-})
+  `
+  })
 export class PetCardComponent {
   pet = input.required<Pet>();
 }
