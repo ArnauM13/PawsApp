@@ -11,7 +11,7 @@ import { PetCardComponent } from '../../components/pet-card/pet-card.component';
   selector: 'fp-home',
   imports: [DataViewComponent, PetCardComponent],
   template: `
-    <div class="container p-4">
+    <div class="p-4">
       <fp-data-view
         [dataItems]="pets()"
         layout="grid"
