@@ -9,29 +9,27 @@ export type DataViewLayout = 'list' | 'grid';
   standalone: true,
   imports: [DataViewModule, NgTemplateOutlet],
   template: `
-    <div class="card">
-      <p-dataview [value]="dataItems()" [layout]="layout()">
+    <p-dataview [value]="dataItems()" [layout]="layout()">
 
-        <ng-template #header>
-          @if (headerTemplate) {
-            <ng-container *ngTemplateOutlet="headerTemplate" />
-          }
-        </ng-template>
+      <ng-template #header>
+        @if (headerTemplate) {
+          <ng-container *ngTemplateOutlet="headerTemplate" />
+        }
+      </ng-template>
 
-        <ng-template #list let-items>
-          @for (item of items; track item.id) {
-            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
-          }
-        </ng-template>
+      <ng-template #list let-items>
+        @for (item of items; track item.id) {
+          <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+        }
+      </ng-template>
 
-        <ng-template #grid let-items>
-          @for (item of items; track item.id) {
-            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
-          }
-        </ng-template>
+      <ng-template #grid let-items>
+        @for (item of items; track item.id) {
+          <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+        }
+      </ng-template>
 
-      </p-dataview>
-    </div>
+    </p-dataview>
   `,
   styles: [`
     .empty-state {
@@ -46,6 +44,7 @@ export class DataViewComponent<T> {
   layout = input<DataViewLayout>('list');
   options = ['list', 'grid'];
 
-  @Input() headerTemplate?: TemplateRef<any>;
   @Input({required: true}) itemTemplate!: TemplateRef<any>;
+
+  @Input() headerTemplate?: TemplateRef<any>;
 }

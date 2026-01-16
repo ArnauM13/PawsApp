@@ -1,14 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+
 import { PetsService } from '../../services/pets.service';
 import { Pet } from '../../models/pet.model';
+
 import { DataViewComponent } from '../../../../shared/ui/dataview/dataview.component';
+import { PetCardComponent } from '../../components/pet-card/pet-card.component';
 
 @Component({
-  selector: 'fp-pets-home',
-  imports: [DataViewComponent],
+  selector: 'fp-home',
+  imports: [DataViewComponent, PetCardComponent],
   template: `
-    <div class="container mx-auto">
+    <div class="container p-4">
       <fp-data-view
         [dataItems]="pets()"
         layout="grid"
@@ -20,10 +23,7 @@ import { DataViewComponent } from '../../../../shared/ui/dataview/dataview.compo
         </ng-template>
 
         <ng-template #itemTemplate let-pet>
-            <div class="flex flex-col items-center justify-center">
-              <img [src]="pet.photo_url" [alt]="pet.name" class="w-24 h-24 rounded-full" />
-              <p>{{ pet.name }}</p>
-            </div>
+          <fp-pet-card [pet]="pet"></fp-pet-card>
         </ng-template>
 
       </fp-data-view>
