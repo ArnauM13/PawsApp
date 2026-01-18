@@ -4,9 +4,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PetsService } from '../../services/pets.service';
 import { Pet } from '../../models/pet.model';
 
-import { DataViewComponent } from '../../../../shared/ui/dataview/dataview.component';
+import { DataViewComponent, TopbarComponent } from '@shared/ui';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
-import { TopbarComponent } from '../../../../shared/ui/topbar/topbar.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

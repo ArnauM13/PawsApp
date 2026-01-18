@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { LanguageDropdownComponent } from '../language-dropdown/language-dropdown.component';
+import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
 
 @Component({
   selector: 'fp-topbar',

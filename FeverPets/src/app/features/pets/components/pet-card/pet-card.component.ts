@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { CardComponent } from '../../../../shared/ui/card/card.component';
+import { CardComponent } from '@shared/ui';
 import { Pet } from '../../models/pet.model';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
