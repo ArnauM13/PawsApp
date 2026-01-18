@@ -6,6 +6,9 @@ import { getHealthBadgeInfo } from '../../utils/pet-health.util';
 
 /**
  * Component to display pet health status with visual badge.
+ *
+ * @param healthStatus - The health status of the pet
+ * @returns The pet health badge component
  */
 @Component({
   selector: 'fp-pet-health-badge',

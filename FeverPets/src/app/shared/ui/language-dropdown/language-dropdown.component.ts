@@ -3,6 +3,11 @@ import { SelectModule } from 'primeng/select';
 import { TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
+/**
+ * Component to display a language dropdown.
+ *
+ * @returns The language dropdown component
+ */
 @Component({
   selector: 'fp-language-dropdown',
   standalone: true,
