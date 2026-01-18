@@ -1,0 +1,161 @@
+{
+  "pets": [
+    {
+      "id": 1,
+      "name": "Bingo",
+      "kind": "dog",
+      "weight": 15000,
+      "height": 45,
+      "length": 60,
+      "photo_url": "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400",
+      "description": "Bingo is a friendly and energetic golden retriever who loves playing fetch and going for long walks in the park."
+    },
+    {
+      "id": 2,
+      "name": "Whiskers",
+      "kind": "cat",
+      "weight": 4500,
+      "height": 25,
+      "length": 40,
+      "photo_url": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400",
+      "description": "Whiskers is a curious and independent tabby cat who enjoys napping in sunny spots and watching birds from the window.",
+      "number_of_lives": 7
+    },
+    {
+      "id": 3,
+      "name": "Max",
+      "kind": "dog",
+      "weight": 12000,
+      "height": 40,
+      "length": 55,
+      "photo_url": "https://images.unsplash.com/photo-1534361960057-19889c4f8c5a?w=400",
+      "description": "Max is a loyal German Shepherd who is great with children and loves to protect his family."
+    },
+    {
+      "id": 4,
+      "name": "Luna",
+      "kind": "cat",
+      "weight": 3500,
+      "height": 22,
+      "length": 35,
+      "photo_url": "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400",
+      "description": "Luna is a graceful black cat with bright green eyes who loves to explore and climb to high places.",
+      "number_of_lives": 6
+    },
+    {
+      "id": 5,
+      "name": "Rocky",
+      "kind": "dog",
+      "weight": 20000,
+      "height": 50,
+      "length": 70,
+      "photo_url": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400",
+      "description": "Rocky is a strong and playful bulldog who loves to play tug-of-war and cuddle on the couch."
+    },
+    {
+      "id": 6,
+      "name": "Mittens",
+      "kind": "cat",
+      "weight": 4000,
+      "height": 24,
+      "length": 38,
+      "photo_url": "https://images.unsplash.com/photo-1513245543132-31f507417b26?w=400",
+      "description": "Mittens is a fluffy white cat with adorable white paws who loves to be petted and purrs loudly.",
+      "number_of_lives": 5
+    },
+    {
+      "id": 7,
+      "name": "Buddy",
+      "kind": "dog",
+      "weight": 8000,
+      "height": 35,
+      "length": 50,
+      "photo_url": "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400",
+      "description": "Buddy is a friendly beagle who has an excellent sense of smell and loves to follow interesting scents during walks."
+    },
+    {
+      "id": 8,
+      "name": "Shadow",
+      "kind": "cat",
+      "weight": 5000,
+      "height": 28,
+      "length": 42,
+      "photo_url": "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=400",
+      "description": "Shadow is a sleek black cat who moves silently and loves to hunt toy mice and play hide-and-seek.",
+      "number_of_lives": 4
+    },
+    {
+      "id": 9,
+      "name": "Daisy",
+      "kind": "dog",
+      "weight": 6000,
+      "height": 30,
+      "length": 45,
+      "photo_url": "https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=400",
+      "description": "Daisy is a cheerful corgi with short legs and a big personality who loves to herd and play with other dogs."
+    },
+    {
+      "id": 10,
+      "name": "Oreo",
+      "kind": "cat",
+      "weight": 4200,
+      "height": 23,
+      "length": 36,
+      "photo_url": "https://images.unsplash.com/photo-1517331156700-3c241d2b4d83?w=400",
+      "description": "Oreo is a tuxedo cat with black and white markings who is very social and loves attention from humans.",
+      "number_of_lives": 3
+    },
+    {
+      "id": 11,
+      "name": "Charlie",
+      "kind": "dog",
+      "weight": 10000,
+      "height": 38,
+      "length": 52,
+      "photo_url": "https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400",
+      "description": "Charlie is an intelligent border collie who loves learning new tricks and playing frisbee in the park."
+    },
+    {
+      "id": 12,
+      "name": "Ginger",
+      "kind": "cat",
+      "weight": 3800,
+      "height": 21,
+      "length": 33,
+      "photo_url": "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=400",
+      "description": "Ginger is an orange tabby cat who is very affectionate and loves to curl up on laps for long naps.",
+      "number_of_lives": 2
+    },
+    {
+      "id": 13,
+      "name": "Zeus",
+      "kind": "dog",
+      "weight": 25000,
+      "height": 55,
+      "length": 75,
+      "photo_url": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400",
+      "description": "Zeus is a majestic Great Dane who is gentle despite his large size and loves to be around his family."
+    },
+    {
+      "id": 14,
+      "name": "Princess",
+      "kind": "cat",
+      "weight": 3200,
+      "height": 20,
+      "length": 32,
+      "photo_url": "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=400",
+      "description": "Princess is a delicate Persian cat with long, luxurious fur who enjoys being groomed and pampered.",
+      "number_of_lives": 1
+    },
+    {
+      "id": 15,
+      "name": "Rex",
+      "kind": "dog",
+      "weight": 18000,
+      "height": 48,
+      "length": 65,
+      "photo_url": "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400",
+      "description": "Rex is a confident Rottweiler who is protective of his family and enjoys training and mental stimulation."
+    }
+  ]
+}
