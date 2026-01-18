@@ -1,17 +1,19 @@
-import { Component, inject, signal, computed, OnDestroy } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Component, inject, signal, OnDestroy, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { PetsService } from '../../services/pets.service';
-import { Pet } from '../../models/pet.model';
-
+import { PetsDataService, PetsSortService, PetsLayoutService } from '../../services';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
 import { PetListItemComponent } from '../../components/pet-list-item';
 import { PetOfTheDayComponent } from '../../components/pet-of-the-day';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { calculatePage, getRowsPerPage } from '@shared/utils';
 import { SkeletonModule } from 'primeng/skeleton';
+import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   selector: 'fp-home',
@@ -22,7 +24,10 @@ import { SkeletonModule } from 'primeng/skeleton';
     PetOfTheDayComponent,
     TopbarComponent,
     TranslateModule,
-    SkeletonModule
+    SkeletonModule,
+    SelectModule,
+    ButtonModule,
+    FormsModule
   ],
   template: `
   <div class="flex flex-col h-screen p-2">
@@ -32,16 +37,42 @@ import { SkeletonModule } from 'primeng/skeleton';
     <fp-pet-of-the-day />
 
     <fp-data-view
-      [dataItems]="pets()"
-      [totalRecords]="totalRecords()"
-      [isLoading]="isLoading()"
-      layout="grid"
+      [dataItems]="dataService.pets()"
+      [totalRecords]="dataService.totalRecords()"
+      [isLoading]="dataService.isLoadingSignal()"
+      [layout]="layoutService.layout()"
+      [sortField]="undefined"
+      [sortOrder]="undefined"
+      [lazy]="!sortService.hasSorting()"
+      [headerTemplate]="headerTemplate"
       [listItemTemplate]="listItemTemplate"
       [gridItemTemplate]="gridItemTemplate"
       [listSkeletonTemplate]="listSkeletonTemplate"
       [gridSkeletonTemplate]="gridSkeletonTemplate"
       (lazyLoad)="onLazyLoad($event)"
       (layoutChange)="onLayoutChange($event)">
+
+      <ng-template #headerTemplate>
+        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+          <p-select
+            [options]="sortOptions"
+            [(ngModel)]="sortKey"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'PETS.SORT.BY' | translate"
+            (onChange)="onSortChange($event)"
+            class="w-full md:w-auto" />
+          @if (sortService.hasSorting()) {
+            <p-button
+              icon="pi pi-times"
+              [label]="'PETS.SORT.RESET' | translate"
+              [outlined]="true"
+              severity="secondary"
+              (onClick)="resetSort()"
+              class="w-full md:w-auto" />
+          }
+        </div>
+      </ng-template>
 
       <ng-template #listItemTemplate let-pet>
         <fp-pet-list-item [pet]="pet" />
@@ -108,56 +139,91 @@ import { SkeletonModule } from 'primeng/skeleton';
   </div>
   `,
 })
-export class PetsHomeComponent implements OnDestroy {
-  private readonly petsService = inject(PetsService);
+export class PetsHomeComponent implements OnInit, OnDestroy {
+  protected readonly dataService = inject(PetsDataService);
+  protected readonly sortService = inject(PetsSortService);
+  protected readonly layoutService = inject(PetsLayoutService);
+  private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
-  private currentSubscription?: Subscription;
 
-  private readonly currentLayout = signal<'list' | 'grid'>('grid');
-  private readonly currentPets = signal<Pet[]>([]);
-  private readonly totalPets = signal<number>(0);
-  protected readonly isLoading = signal(false);
+  protected sortOptions: SelectItem[] = [];
 
-  protected readonly pets = computed(() => this.currentPets());
-  protected readonly totalRecords = computed(() => this.totalPets());
+  protected get sortKey(): string | undefined {
+    return this.sortService.sortKey();
+  }
+
+  protected set sortKey(value: string | undefined) {
+    this.sortService.sortKey.set(value);
+  }
 
   constructor() {
-    this.loadPage(1);
+    const rows = getRowsPerPage(this.layoutService.layout());
+    this.dataService.loadPage(1, rows);
+  }
+
+  ngOnInit(): void {
+    this.initializeSortOptions();
+    this.handleSortChange();
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.initializeSortOptions();
+      });
+  }
+
+  private initializeSortOptions(): void {
+    this.sortOptions = [
+      { label: this.translate.instant('PETS.SORT.NAME_ASC'), value: 'name' },
+      { label: this.translate.instant('PETS.SORT.NAME_DESC'), value: '!name' },
+      { label: this.translate.instant('PETS.SORT.WEIGHT_ASC'), value: 'weight' },
+      { label: this.translate.instant('PETS.SORT.WEIGHT_DESC'), value: '!weight' },
+      { label: this.translate.instant('PETS.SORT.HEIGHT_ASC'), value: 'height' },
+      { label: this.translate.instant('PETS.SORT.HEIGHT_DESC'), value: '!height' },
+      { label: this.translate.instant('PETS.SORT.LENGTH_ASC'), value: 'length' },
+      { label: this.translate.instant('PETS.SORT.LENGTH_DESC'), value: '!length' },
+      { label: this.translate.instant('PETS.SORT.KIND_ASC'), value: 'kind' },
+      { label: this.translate.instant('PETS.SORT.KIND_DESC'), value: '!kind' }
+    ];
+  }
+
+  onSortChange(event: any): void {
+    const value = event.value;
+    this.sortService.applySort(value);
+    this.handleSortChange();
+  }
+
+  resetSort(): void {
+    this.sortService.clearSort();
+    this.handleSortChange();
+  }
+
+  private handleSortChange(): void {
+    if (this.sortService.hasSorting()) {
+      this.dataService.loadAllPetsInBackground();
+    } else {
+      this.dataService.clearAllPets();
+      const rows = getRowsPerPage(this.layoutService.layout());
+      this.dataService.loadPage(1, rows);
+    }
   }
 
   ngOnDestroy(): void {
-    this.currentSubscription?.unsubscribe();
+    this.dataService.destroy();
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   onLayoutChange(layout: 'list' | 'grid'): void {
-    this.currentLayout.set(layout);
-    this.loadPage(1);
+    this.layoutService.setLayout(layout);
+    const rows = getRowsPerPage(layout);
+    this.dataService.loadPage(1, rows);
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
-    const page = calculatePage(event.first, event.rows);
-    this.loadPage(page);
-  }
-
-  private loadPage(page: number): void {
-    this.currentSubscription?.unsubscribe();
-
-    this.isLoading.set(true);
-    const rows = getRowsPerPage(this.currentLayout());
-
-    this.currentSubscription = this.petsService.getPetsPaginated(page, rows)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.currentPets.set(response.data);
-          this.totalPets.set(response.total);
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        }
-      });
+    if (this.dataService.shouldLoadPage()) {
+      const page = calculatePage(event.first, event.rows);
+      const rows = getRowsPerPage(this.layoutService.layout());
+      this.dataService.loadPage(page, rows);
+    }
   }
 }

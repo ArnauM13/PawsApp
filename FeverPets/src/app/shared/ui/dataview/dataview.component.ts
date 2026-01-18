@@ -1,7 +1,8 @@
-import { Component, input, effect, computed, TemplateRef, output } from '@angular/core';
+import { Component, input, effect, computed, TemplateRef, output, signal } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
 import { PaginatorModule } from 'primeng/paginator';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -26,30 +27,38 @@ export type DataViewLayout = 'list' | 'grid';
 @Component({
   selector: 'fp-data-view',
   standalone: true,
-  imports: [DataViewModule, PaginatorModule, SelectButtonModule, FormsModule, NgTemplateOutlet, TranslateModule],
+  imports: [DataViewModule, PaginatorModule, SelectButtonModule, SelectModule, FormsModule, NgTemplateOutlet, TranslateModule],
   template: `
     @if (isLoading() || hasResults()) {
       <p-dataview
         [value]="dataItems()"
-        [layout]="currentLayout"
+        [layout]="currentLayout()"
         [paginator]="hasResults()"
         [rows]="rowsPerPage()"
-        [lazy]="true"
+        [lazy]="lazy()"
         [totalRecords]="totalRecords()"
+        [sortField]="sortField()"
+        [sortOrder]="sortOrder()"
         (onLazyLoad)="onLazyLoad($event)"
         emptyMessage=" ">
 
         @if (hasResults()) {
           <ng-template #header>
-            <div class="flex justify-end">
-              <p-selectbutton
-                [(ngModel)]="currentLayout"
-                [options]="layoutOptions"
-                [allowEmpty]="false">
-                <ng-template #item let-item>
-                  <i [class]="item === 'list' ? 'pi pi-bars' : 'pi pi-th-large'"></i>
-                </ng-template>
-              </p-selectbutton>
+            <div class="flex flex-col md:flex-row md:justify-between gap-4">
+              @if (headerTemplate()) {
+                <ng-container *ngTemplateOutlet="headerTemplate()!" />
+              }
+              <div class="flex justify-end">
+                <p-selectbutton
+                  [ngModel]="currentLayout()"
+                  [options]="layoutOptions"
+                  [allowEmpty]="false"
+                  (ngModelChange)="onLayoutChangeFromButton($event)">
+                  <ng-template #item let-item>
+                    <i [class]="item === 'list' ? 'pi pi-bars' : 'pi pi-th-large'"></i>
+                  </ng-template>
+                </p-selectbutton>
+              </div>
             </div>
           </ng-template>
         }
@@ -100,24 +109,29 @@ export class DataViewComponent<T> {
   rows = input<number>(6);
   totalRecords = input<number>(0);
   isLoading = input<boolean>(false);
+  sortField = input<string | undefined>(undefined);
+  sortOrder = input<number | undefined>(undefined);
+  lazy = input<boolean>(true);
 
   listItemTemplate = input.required<TemplateRef<{ $implicit: T }>>();
   gridItemTemplate = input.required<TemplateRef<{ $implicit: T }>>();
 
   listSkeletonTemplate = input<TemplateRef<void>>();
   gridSkeletonTemplate = input<TemplateRef<void>>();
+  headerTemplate = input<TemplateRef<void>>();
 
   lazyLoad = output<{ first: number; rows: number }>();
   layoutChange = output<DataViewLayout>();
 
-  currentLayout: DataViewLayout = 'grid';
   layoutOptions: DataViewLayout[] = ['list', 'grid'];
+
+  currentLayout = computed(() => this.layout());
 
   rowsPerPage = computed(() => {
     if (this.rows() !== undefined) {
       return this.rows()!;
     }
-    return PAGINATION_CONFIG[this.currentLayout];
+    return PAGINATION_CONFIG[this.currentLayout()];
   });
 
   skeletonArray = computed(() => {
@@ -130,14 +144,8 @@ export class DataViewComponent<T> {
 
   readonly gridContainerClass = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4';
 
-  constructor() {
-    effect(() => {
-      const newLayout = this.layout();
-      if (this.currentLayout !== newLayout) {
-        this.currentLayout = newLayout;
-        this.layoutChange.emit(newLayout);
-      }
-    });
+  onLayoutChangeFromButton(newLayout: DataViewLayout): void {
+    this.layoutChange.emit(newLayout);
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
