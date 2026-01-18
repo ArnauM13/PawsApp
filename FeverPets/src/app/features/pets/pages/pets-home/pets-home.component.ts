@@ -1,4 +1,6 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnDestroy } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { PetsService } from '../../services/pets.service';
 import { Pet } from '../../models/pet.model';
@@ -21,7 +23,7 @@ import { SkeletonModule } from 'primeng/skeleton';
     SkeletonModule
   ],
   template: `
-  <div class="flex flex-col h-screen p-5">
+  <div class="flex flex-col h-screen p-2">
 
     <fp-topbar />
 
@@ -74,7 +76,7 @@ import { SkeletonModule } from 'primeng/skeleton';
       </ng-template>
 
       <ng-template #gridSkeletonTemplate>
-        <div class="p-6 bg-surface-0 dark:bg-surface-900 rounded" [style.box-shadow]="'var(--p-card-shadow)'">
+        <div class="p-6 bg-surface-0 rounded" [style.box-shadow]="'var(--p-card-shadow)'">
           <div class="flex flex-col gap-4">
             <p-skeleton height="12rem" class="w-full rounded" />
             <div class="flex flex-col gap-2">
@@ -102,8 +104,10 @@ import { SkeletonModule } from 'primeng/skeleton';
   </div>
   `,
 })
-export class PetsHomeComponent {
+export class PetsHomeComponent implements OnDestroy {
   private readonly petsService = inject(PetsService);
+  private readonly destroy$ = new Subject<void>();
+  private currentSubscription?: Subscription;
 
   private readonly currentLayout = signal<'list' | 'grid'>('grid');
   private readonly currentPets = signal<Pet[]>([]);
@@ -117,6 +121,12 @@ export class PetsHomeComponent {
     this.loadPage(1);
   }
 
+  ngOnDestroy(): void {
+    this.currentSubscription?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onLayoutChange(layout: 'list' | 'grid'): void {
     this.currentLayout.set(layout);
     this.loadPage(1);
@@ -128,18 +138,22 @@ export class PetsHomeComponent {
   }
 
   private loadPage(page: number): void {
+    this.currentSubscription?.unsubscribe();
+
     this.isLoading.set(true);
     const rows = getRowsPerPage(this.currentLayout());
 
-    this.petsService.getPetsPaginated(page, rows).subscribe({
-      next: (response) => {
-        this.currentPets.set(response.data);
-        this.totalPets.set(response.total);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      }
-    });
+    this.currentSubscription = this.petsService.getPetsPaginated(page, rows)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.currentPets.set(response.data);
+          this.totalPets.set(response.total);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        }
+      });
   }
 }
