@@ -19,6 +19,7 @@
     "PET_OF_THE_DAY": "Mascota Favorita del Dia",
     "SORT": {
       "BY": "Ordenar per",
+      "RESET": "Restablir ordre",
       "NAME_ASC": "Nom (A-Z)",
       "NAME_DESC": "Nom (Z-A)",
       "WEIGHT_ASC": "Pes (Menor a Major)",
