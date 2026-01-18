@@ -8,6 +8,7 @@ import { Pet } from '../../models/pet.model';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
 import { PetListItemComponent } from '../../components/pet-list-item';
+import { PetOfTheDayComponent } from '../../components/pet-of-the-day';
 import { TranslateModule } from '@ngx-translate/core';
 import { calculatePage, getRowsPerPage } from '@shared/utils';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -18,6 +19,7 @@ import { SkeletonModule } from 'primeng/skeleton';
     DataViewComponent,
     PetCardComponent,
     PetListItemComponent,
+    PetOfTheDayComponent,
     TopbarComponent,
     TranslateModule,
     SkeletonModule
@@ -26,6 +28,8 @@ import { SkeletonModule } from 'primeng/skeleton';
   <div class="flex flex-col h-screen p-2">
 
     <fp-topbar />
+
+    <fp-pet-of-the-day />
 
     <fp-data-view
       [dataItems]="pets()"

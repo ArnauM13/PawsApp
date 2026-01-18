@@ -4,6 +4,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
+import { APP_CONFIG } from '@core/config';
 
 @Component({
   selector: 'fp-topbar',
@@ -41,7 +42,7 @@ import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
   `,
 })
 export class TopbarComponent {
-  logoPath = 'images/logo.png';
+  logoPath = APP_CONFIG.logoPath;
   showBackButton = input<boolean>(false);
   showLanguageDropdown = input<boolean>(true);
   backClick = output<void>();
