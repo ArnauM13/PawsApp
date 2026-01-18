@@ -4,6 +4,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ImageFallbackDirective } from '@shared/directives';
+import { APP_CONFIG } from '@core/config';
 
 import { PetsService } from '../../services/pets.service';
 import { Pet } from '../../models/pet.model';
@@ -15,7 +17,8 @@ import { getPetOfTheDay } from '../../utils/pet-of-the-day.util';
   imports: [
     CommonModule,
     TranslateModule,
-    RouterModule
+    RouterModule,
+    ImageFallbackDirective
   ],
   template: `
     <div class="fixed bottom-4 right-4 z-50">
@@ -43,6 +46,7 @@ import { getPetOfTheDay } from '../../utils/pet-of-the-day.util';
             <img
               [src]="petOfTheDay()!.photo_url"
               [alt]="petOfTheDay()!.name"
+              [fpImageFallback]="logoPath"
               class="w-full h-32 object-cover rounded mb-2" />
             <h3 class="text-lg font-bold text-center mb-2">{{ petOfTheDay()!.name }}</h3>
             <a
@@ -63,6 +67,7 @@ export class PetOfTheDayComponent implements OnInit, OnDestroy {
   protected readonly petOfTheDay = signal<Pet | null>(null);
   protected readonly currentDate = signal<string>('');
   protected readonly isOpen = signal<boolean>(false);
+  protected readonly logoPath = APP_CONFIG.logoPath;
 
   ngOnInit(): void {
     this.updateCurrentDate();
