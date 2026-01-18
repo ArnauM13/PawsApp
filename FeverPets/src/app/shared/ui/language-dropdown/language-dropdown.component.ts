@@ -14,8 +14,7 @@ import { FormsModule } from '@angular/forms';
       optionLabel="label"
       optionValue="value"
       (onChange)="changeLang($event.value)"
-      ariaLabel="Language selector">
-    </p-select>
+      ariaLabel="Language selector" />
   `,
 })
 export class LanguageDropdownComponent implements OnInit {

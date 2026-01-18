@@ -13,19 +13,16 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'fp-home',
   imports: [DataViewComponent, PetCardComponent, TopbarComponent, TranslateModule],
   template: `
-    <fp-topbar></fp-topbar>
-    <div class="p-4">
-      <fp-data-view
-        [dataItems]="pets()"
-        layout="grid"
-        [itemTemplate]="itemTemplate">
+  <div class="flex flex-col h-screen p-5">
 
-        <ng-template #itemTemplate let-pet>
-          <fp-pet-card [pet]="pet"></fp-pet-card>
-        </ng-template>
+    <fp-topbar />
 
-      </fp-data-view>
-    </div>
+    <fp-data-view [dataItems]="pets()" layout="grid" [itemTemplate]="itemTemplate">
+      <ng-template #itemTemplate let-pet>
+        <fp-pet-card [pet]="pet" />
+      </ng-template>
+    </fp-data-view>
+  </div>
   `,
 })
 export class PetsHomeComponent {

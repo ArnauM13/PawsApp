@@ -9,7 +9,7 @@ import { LanguageDropdownComponent } from '../language-dropdown/language-dropdow
   standalone: true,
   imports: [MenubarModule, TranslateModule, CommonModule, LanguageDropdownComponent],
   template: `
-    <p-menubar [model]="items">
+    <p-menubar>
       <ng-template pTemplate="start">
         <div class="flex items-center gap-3">
           <img
@@ -23,19 +23,11 @@ import { LanguageDropdownComponent } from '../language-dropdown/language-dropdow
       </ng-template>
 
       <ng-template pTemplate="end">
-        <fp-language-dropdown></fp-language-dropdown>
+        <fp-language-dropdown />
       </ng-template>
     </p-menubar>
   `,
 })
 export class TopbarComponent {
   logoPath = 'images/logo.png';
-
-  items = [
-    {
-      label: 'Pets',
-      icon: 'pi pi-home',
-      routerLink: '/'
-    }
-  ];
 }
