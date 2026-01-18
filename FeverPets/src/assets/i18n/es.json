@@ -7,7 +7,20 @@
   "PETS": {
     "TITLE": "Mascotas",
     "LIST": "Lista de mascotas",
-    "SEE_MORE": "Ver más"
+    "SEE_MORE": "Ver más",
+    "WEIGHT": "Peso",
+    "HEIGHT": "Altura",
+    "LENGTH": "Longitud",
+    "LIVES": "Vidas",
+    "KIND": {
+      "DOG": "Perro",
+      "CAT": "Gato"
+    },
+    "HEALTH": {
+      "UNHEALTHY": "No saludable",
+      "HEALTHY": "Saludable",
+      "VERY_HEALTHY": "Muy saludable"
+    }
   },
   "COMMON": {
     "LOADING": "Cargando...",

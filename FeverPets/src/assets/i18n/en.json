@@ -7,7 +7,20 @@
   "PETS": {
     "TITLE": "Pets",
     "LIST": "Pets list",
-    "SEE_MORE": "See more"
+    "SEE_MORE": "See more",
+    "WEIGHT": "Weight",
+    "HEIGHT": "Height",
+    "LENGTH": "Length",
+    "LIVES": "Lives",
+    "KIND": {
+      "DOG": "Dog",
+      "CAT": "Cat"
+    },
+    "HEALTH": {
+      "UNHEALTHY": "Unhealthy",
+      "HEALTHY": "Healthy",
+      "VERY_HEALTHY": "Very healthy"
+    }
   },
   "COMMON": {
     "LOADING": "Loading...",
