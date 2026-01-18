@@ -17,6 +17,19 @@
     "MEASUREMENTS": "Measurements",
     "NOT_FOUND": "Pet not found",
     "PET_OF_THE_DAY": "Favorite Pet of the Day",
+    "SORT": {
+      "BY": "Sort by",
+      "NAME_ASC": "Name (A-Z)",
+      "NAME_DESC": "Name (Z-A)",
+      "WEIGHT_ASC": "Weight (Low to High)",
+      "WEIGHT_DESC": "Weight (High to Low)",
+      "HEIGHT_ASC": "Height (Low to High)",
+      "HEIGHT_DESC": "Height (High to Low)",
+      "LENGTH_ASC": "Length (Low to High)",
+      "LENGTH_DESC": "Length (High to Low)",
+      "KIND_ASC": "Kind (A-Z)",
+      "KIND_DESC": "Kind (Z-A)"
+    },
     "KIND": {
       "DOG": "Dog",
       "CAT": "Cat"
