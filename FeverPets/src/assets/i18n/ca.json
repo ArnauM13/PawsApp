@@ -17,6 +17,19 @@
     "MEASUREMENTS": "Mides",
     "NOT_FOUND": "Mascota no trobada",
     "PET_OF_THE_DAY": "Mascota Favorita del Dia",
+    "SORT": {
+      "BY": "Ordenar per",
+      "NAME_ASC": "Nom (A-Z)",
+      "NAME_DESC": "Nom (Z-A)",
+      "WEIGHT_ASC": "Pes (Menor a Major)",
+      "WEIGHT_DESC": "Pes (Major a Menor)",
+      "HEIGHT_ASC": "Alçada (Menor a Major)",
+      "HEIGHT_DESC": "Alçada (Major a Menor)",
+      "LENGTH_ASC": "Longitud (Menor a Major)",
+      "LENGTH_DESC": "Longitud (Major a Menor)",
+      "KIND_ASC": "Tipus (A-Z)",
+      "KIND_DESC": "Tipus (Z-A)"
+    },
     "KIND": {
       "DOG": "Gos",
       "CAT": "Gat"
