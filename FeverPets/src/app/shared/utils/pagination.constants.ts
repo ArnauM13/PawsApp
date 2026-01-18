@@ -1,4 +1,4 @@
-import { DataViewLayout } from '../ui/dataview/dataview.component';
+import { DataViewLayout } from '@shared/ui/dataview';
 
 /**
  * Configuració de paginació per layout

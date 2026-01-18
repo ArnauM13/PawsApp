@@ -1,10 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 import { TranslateModule } from '@ngx-translate/core';
-import { CommonModule } from '@angular/common';
-import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
 import { APP_CONFIG } from '@core/config';
+import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
 
 @Component({
   selector: 'fp-topbar',

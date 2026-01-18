@@ -1,12 +1,12 @@
-import { Component, input, effect, computed, TemplateRef, output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NgTemplateOutlet } from '@angular/common';
+import { Component, computed, effect, input, output, signal, TemplateRef } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
 import { PaginatorModule } from 'primeng/paginator';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SelectModule } from 'primeng/select';
-import { FormsModule } from '@angular/forms';
-import { NgTemplateOutlet } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { PAGINATION_CONFIG } from '../../utils/pagination.constants';
+import { PAGINATION_CONFIG } from '@shared/utils';
 
 /**
  * The layout of the data view.
