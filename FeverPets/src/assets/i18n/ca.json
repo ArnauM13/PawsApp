@@ -1,0 +1,14 @@
+{
+  "WELCOME": "Benvingut",
+  "TITLE": "FeverPets",
+  "PETS": {
+    "TITLE": "Mascotes",
+    "LIST": "Llista de mascotes",
+    "SEE_MORE": "Veure més"
+  },
+  "COMMON": {
+    "LOADING": "Carregant...",
+    "ERROR": "S'ha produït un error",
+    "NO_DATA": "No hi ha dades disponibles"
+  }
+}
