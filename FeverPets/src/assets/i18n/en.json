@@ -19,6 +19,7 @@
     "PET_OF_THE_DAY": "Favorite Pet of the Day",
     "SORT": {
       "BY": "Sort by",
+      "RESET": "Reset sort",
       "NAME_ASC": "Name (A-Z)",
       "NAME_DESC": "Name (Z-A)",
       "WEIGHT_ASC": "Weight (Low to High)",

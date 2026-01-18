@@ -11,6 +11,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { calculatePage, getRowsPerPage } from '@shared/utils';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 
@@ -25,6 +26,7 @@ import { SelectItem } from 'primeng/api';
     TranslateModule,
     SkeletonModule,
     SelectModule,
+    ButtonModule,
     FormsModule
   ],
   template: `
@@ -51,14 +53,25 @@ import { SelectItem } from 'primeng/api';
       (layoutChange)="onLayoutChange($event)">
 
       <ng-template #headerTemplate>
-        <p-select
-          [options]="sortOptions"
-          [(ngModel)]="sortKey"
-          optionLabel="label"
-          optionValue="value"
-          [placeholder]="'PETS.SORT.BY' | translate"
-          (onChange)="onSortChange($event)"
-          class="w-full md:w-auto" />
+        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+          <p-select
+            [options]="sortOptions"
+            [(ngModel)]="sortKey"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'PETS.SORT.BY' | translate"
+            (onChange)="onSortChange($event)"
+            class="w-full md:w-auto" />
+          @if (sortService.hasSorting()) {
+            <p-button
+              icon="pi pi-times"
+              [label]="'PETS.SORT.RESET' | translate"
+              [outlined]="true"
+              severity="secondary"
+              (onClick)="resetSort()"
+              class="w-full md:w-auto" />
+          }
+        </div>
       </ng-template>
 
       <ng-template #listItemTemplate let-pet>
@@ -176,6 +189,11 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
   onSortChange(event: any): void {
     const value = event.value;
     this.sortService.applySort(value);
+    this.handleSortChange();
+  }
+
+  resetSort(): void {
+    this.sortService.clearSort();
     this.handleSortChange();
   }
 
