@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, EMPTY } from 'rxjs';
 import { takeUntil, switchMap } from 'rxjs/operators';
+import { ImageFallbackDirective } from '@shared/directives';
+import { APP_CONFIG } from '@core/config';
 
 import { PetsService } from '../../services/pets.service';
 import { Pet } from '../../models/pet.model';
@@ -18,7 +20,8 @@ import { TopbarComponent } from '@shared/ui';
     RouterModule,
     TranslateModule,
     PetInfoComponent,
-    TopbarComponent
+    TopbarComponent,
+    ImageFallbackDirective
   ],
   template: `
     <div class="flex flex-col h-screen p-2">
@@ -36,6 +39,7 @@ import { TopbarComponent } from '@shared/ui';
                 <img
                   [src]="pet()!.photo_url"
                   [alt]="pet()!.name"
+                  [fpImageFallback]="logoPath"
                   class="w-full h-auto rounded-lg object-cover shadow-lg" />
               </div>
 
@@ -73,6 +77,7 @@ export class PetDetailComponent implements OnInit, OnDestroy {
 
   protected readonly pet = signal<Pet | null>(null);
   protected readonly isLoading = signal(false);
+  protected readonly logoPath = APP_CONFIG.logoPath;
 
   ngOnInit(): void {
     this.route.paramMap

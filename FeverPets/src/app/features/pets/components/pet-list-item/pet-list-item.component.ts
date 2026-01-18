@@ -1,5 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ImageFallbackDirective } from '@shared/directives';
+import { APP_CONFIG } from '@core/config';
 import { Pet } from '../../models/pet.model';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,7 +22,8 @@ import { calculateHealth } from '../../utils';
     CommonModule,
     RouterModule,
     TranslateModule,
-    PetInfoComponent
+    PetInfoComponent,
+    ImageFallbackDirective
   ],
   template: `
     <div
@@ -30,6 +33,7 @@ import { calculateHealth } from '../../utils';
         <img
           [src]="pet().photo_url"
           [alt]="pet().name"
+          [fpImageFallback]="logoPath"
           class="w-20 h-20 object-cover rounded" />
       </div>
 
@@ -51,6 +55,7 @@ import { calculateHealth } from '../../utils';
 })
 export class PetListItemComponent {
   pet = input.required<Pet>();
+  protected readonly logoPath = APP_CONFIG.logoPath;
 
   healthStatus = computed(() => calculateHealth(this.pet()));
 }
