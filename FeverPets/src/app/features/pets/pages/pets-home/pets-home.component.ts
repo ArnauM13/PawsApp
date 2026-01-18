@@ -2,7 +2,7 @@ import { Component, inject, signal, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { PetsDataService, PetsSortService } from '../../services';
+import { PetsDataService, PetsSortService, PetsLayoutService } from '../../services';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
 import { PetListItemComponent } from '../../components/pet-list-item';
@@ -40,7 +40,7 @@ import { SelectItem } from 'primeng/api';
       [dataItems]="dataService.pets()"
       [totalRecords]="dataService.totalRecords()"
       [isLoading]="dataService.isLoadingSignal()"
-      layout="grid"
+      [layout]="layoutService.layout()"
       [sortField]="undefined"
       [sortOrder]="undefined"
       [lazy]="!sortService.hasSorting()"
@@ -142,10 +142,10 @@ import { SelectItem } from 'primeng/api';
 export class PetsHomeComponent implements OnInit, OnDestroy {
   protected readonly dataService = inject(PetsDataService);
   protected readonly sortService = inject(PetsSortService);
+  protected readonly layoutService = inject(PetsLayoutService);
   private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
 
-  private readonly currentLayout = signal<'list' | 'grid'>('grid');
   protected sortOptions: SelectItem[] = [];
 
   protected get sortKey(): string | undefined {
@@ -157,7 +157,7 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
   }
 
   constructor() {
-    const rows = getRowsPerPage(this.currentLayout());
+    const rows = getRowsPerPage(this.layoutService.layout());
     this.dataService.loadPage(1, rows);
   }
 
@@ -202,7 +202,7 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
       this.dataService.loadAllPetsInBackground();
     } else {
       this.dataService.clearAllPets();
-      const rows = getRowsPerPage(this.currentLayout());
+      const rows = getRowsPerPage(this.layoutService.layout());
       this.dataService.loadPage(1, rows);
     }
   }
@@ -214,7 +214,7 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
   }
 
   onLayoutChange(layout: 'list' | 'grid'): void {
-    this.currentLayout.set(layout);
+    this.layoutService.setLayout(layout);
     const rows = getRowsPerPage(layout);
     this.dataService.loadPage(1, rows);
   }
@@ -222,7 +222,7 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
   onLazyLoad(event: { first: number; rows: number }): void {
     if (this.dataService.shouldLoadPage()) {
       const page = calculatePage(event.first, event.rows);
-      const rows = getRowsPerPage(this.currentLayout());
+      const rows = getRowsPerPage(this.layoutService.layout());
       this.dataService.loadPage(page, rows);
     }
   }
