@@ -26,7 +26,7 @@ export type DataViewLayout = 'list' | 'grid';
       <ng-template #grid let-items>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         @for (item of items; track item.id) {
-            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+          <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
         }
         </div>
       </ng-template>
