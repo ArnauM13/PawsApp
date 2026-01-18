@@ -1,0 +1,14 @@
+{
+  "WELCOME": "Welcome",
+  "TITLE": "FeverPets",
+  "PETS": {
+    "TITLE": "Pets",
+    "LIST": "Pets list",
+    "SEE_MORE": "See more"
+  },
+  "COMMON": {
+    "LOADING": "Loading...",
+    "ERROR": "An error occurred",
+    "NO_DATA": "No data available"
+  }
+}
