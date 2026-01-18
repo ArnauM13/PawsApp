@@ -17,6 +17,20 @@
     "MEASUREMENTS": "Medidas",
     "NOT_FOUND": "Mascota no encontrada",
     "PET_OF_THE_DAY": "Mascota Favorita del Día",
+    "SORT": {
+      "BY": "Ordenar por",
+      "RESET": "Resetear orden",
+      "NAME_ASC": "Nombre (A-Z)",
+      "NAME_DESC": "Nombre (Z-A)",
+      "WEIGHT_ASC": "Peso (Menor a Mayor)",
+      "WEIGHT_DESC": "Peso (Mayor a Menor)",
+      "HEIGHT_ASC": "Altura (Menor a Mayor)",
+      "HEIGHT_DESC": "Altura (Mayor a Menor)",
+      "LENGTH_ASC": "Longitud (Menor a Mayor)",
+      "LENGTH_DESC": "Longitud (Mayor a Menor)",
+      "KIND_ASC": "Tipo (A-Z)",
+      "KIND_DESC": "Tipo (Z-A)"
+    },
     "KIND": {
       "DOG": "Perro",
       "CAT": "Gato"
