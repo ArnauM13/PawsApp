@@ -1,3 +1,5 @@
+export type HealthStatus = 'unhealthy' | 'healthy' | 'very healthy';
+
 export interface Pet {
   id: number;
   name: string;
