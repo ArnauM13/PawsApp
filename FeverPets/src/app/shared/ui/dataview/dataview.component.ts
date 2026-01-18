@@ -4,6 +4,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { PAGINATION_CONFIG } from '../../utils/pagination.constants';
 
 /**
@@ -25,63 +26,72 @@ export type DataViewLayout = 'list' | 'grid';
 @Component({
   selector: 'fp-data-view',
   standalone: true,
-  imports: [DataViewModule, PaginatorModule, SelectButtonModule, FormsModule, NgTemplateOutlet],
+  imports: [DataViewModule, PaginatorModule, SelectButtonModule, FormsModule, NgTemplateOutlet, TranslateModule],
   template: `
-    <p-dataview
-      [value]="dataItems()"
-      [layout]="currentLayout"
-      [paginator]="true"
-      [rows]="rowsPerPage()"
-      [lazy]="true"
-      [totalRecords]="totalRecords()"
-      (onLazyLoad)="onLazyLoad($event)">
+    @if (isLoading() || hasResults()) {
+      <p-dataview
+        [value]="dataItems()"
+        [layout]="currentLayout"
+        [paginator]="hasResults()"
+        [rows]="rowsPerPage()"
+        [lazy]="true"
+        [totalRecords]="totalRecords()"
+        (onLazyLoad)="onLazyLoad($event)"
+        emptyMessage=" ">
 
-      <ng-template #header>
-        <div class="flex justify-end">
-          <p-selectbutton
-            [(ngModel)]="currentLayout"
-            [options]="layoutOptions"
-            [allowEmpty]="false">
-            <ng-template #item let-item>
-              <i [class]="item === 'list' ? 'pi pi-bars' : 'pi pi-th-large'"></i>
-            </ng-template>
-          </p-selectbutton>
-        </div>
-      </ng-template>
+        @if (hasResults()) {
+          <ng-template #header>
+            <div class="flex justify-end">
+              <p-selectbutton
+                [(ngModel)]="currentLayout"
+                [options]="layoutOptions"
+                [allowEmpty]="false">
+                <ng-template #item let-item>
+                  <i [class]="item === 'list' ? 'pi pi-bars' : 'pi pi-th-large'"></i>
+                </ng-template>
+              </p-selectbutton>
+            </div>
+          </ng-template>
+        }
 
-      <ng-template #list let-items>
-        @if (isLoading()) {
-          @if (listSkeletonTemplate()) {
-            @for (i of skeletonArray(); track i) {
-              <ng-container *ngTemplateOutlet="listSkeletonTemplate()!" />
+        <ng-template #list let-items>
+          @if (isLoading()) {
+            @if (listSkeletonTemplate()) {
+              @for (i of skeletonArray(); track i) {
+                <ng-container *ngTemplateOutlet="listSkeletonTemplate()!" />
+              }
+            }
+          } @else {
+            @for (item of items; track item.id) {
+              <ng-container *ngTemplateOutlet="listItemTemplate(); context: { $implicit: item }" />
             }
           }
-        } @else {
-          @for (item of items; track item.id) {
-            <ng-container *ngTemplateOutlet="listItemTemplate(); context: { $implicit: item }" />
-          }
-        }
-      </ng-template>
+        </ng-template>
 
-      <ng-template #grid let-items>
-        @if (isLoading()) {
-          @if (gridSkeletonTemplate()) {
+        <ng-template #grid let-items>
+          @if (isLoading()) {
+            @if (gridSkeletonTemplate()) {
+              <div [class]="gridContainerClass">
+                @for (i of skeletonArray(); track i) {
+                  <ng-container *ngTemplateOutlet="gridSkeletonTemplate()!" />
+                }
+              </div>
+            }
+          } @else {
             <div [class]="gridContainerClass">
-              @for (i of skeletonArray(); track i) {
-                <ng-container *ngTemplateOutlet="gridSkeletonTemplate()!" />
+              @for (item of items; track item.id) {
+                <ng-container *ngTemplateOutlet="gridItemTemplate(); context: { $implicit: item }" />
               }
             </div>
           }
-        } @else {
-          <div [class]="gridContainerClass">
-            @for (item of items; track item.id) {
-              <ng-container *ngTemplateOutlet="gridItemTemplate(); context: { $implicit: item }" />
-            }
-          </div>
-        }
-      </ng-template>
+        </ng-template>
 
-    </p-dataview>
+      </p-dataview>
+    } @else {
+      <div class="flex items-center justify-center p-8">
+        <p class="text-gray-500">{{ 'COMMON.NO_DATA' | translate }}</p>
+      </div>
+    }
   `
 })
 export class DataViewComponent<T> {
@@ -112,6 +122,10 @@ export class DataViewComponent<T> {
 
   skeletonArray = computed(() => {
     return Array(this.rowsPerPage()).fill(0).map((_, i) => i);
+  });
+
+  hasResults = computed(() => {
+    return !this.isLoading() && this.dataItems().length > 0;
   });
 
   readonly gridContainerClass = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4';

@@ -51,7 +51,7 @@ import { SkeletonModule } from 'primeng/skeleton';
           class="flex items-center gap-4 p-4 border-b"
           [style.border-bottom-color]="'var(--p-surface-border, #e5e7eb)'">
           <div class="shrink-0">
-            <p-skeleton width="6rem" height="6rem" class="sm:w-8! sm:h-8!" shape="square" />
+            <p-skeleton width="6rem" height="6rem" shape="square" />
           </div>
 
           <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -83,7 +83,7 @@ import { SkeletonModule } from 'primeng/skeleton';
               <div class="flex items-start justify-between gap-2">
                 <p-skeleton width="8rem" height="2rem" />
                 <div class="flex items-center gap-2">
-                  <p-skeleton width="3rem" height="1.5rem" shape="circle" />
+                  <p-skeleton width="1.5rem" height="1.5rem" shape="circle" />
                   <p-skeleton width="2rem" height="1rem" />
                 </div>
               </div>
