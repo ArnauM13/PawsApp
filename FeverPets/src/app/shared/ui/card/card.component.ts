@@ -1,6 +1,6 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, Input, input, TemplateRef } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { NgTemplateOutlet } from '@angular/common';
 
 /**
  * Component to display a card.

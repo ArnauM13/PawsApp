@@ -1,10 +1,10 @@
-import { Component, input, computed } from '@angular/core';
-import { Pet } from '../../models/pet.model';
 import { CommonModule } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { PetWeightPipe, PetCentimetersPipe, PetLivesPipe } from '../../pipes';
-import { PetHealthBadgeComponent } from '../pet-health-badge';
-import { calculateHealth } from '../../utils';
+import { PetHealthBadgeComponent } from '@features/pets/components';
+import { Pet } from '@features/pets/models';
+import { PetCentimetersPipe, PetLivesPipe, PetWeightPipe } from '@features/pets/pipes';
+import { calculateHealth } from '@features/pets/utils';
 
 /**
  * Component to display pet information (reusable for both grid and list views).

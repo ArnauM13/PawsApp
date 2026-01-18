@@ -1,8 +1,8 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PetsService, PaginatedResponse } from './pets.service';
-import { Pet } from '../models/pet.model';
+import { Pet } from '@features/pets/models';
+import { PaginatedResponse, PetsService } from './pets.service';
 import { PetsSortService } from './pets-sort.service';
 
 @Injectable({
