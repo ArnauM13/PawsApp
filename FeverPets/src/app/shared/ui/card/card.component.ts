@@ -2,6 +2,17 @@ import { Component, Input, input, TemplateRef } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { NgTemplateOutlet } from '@angular/common';
 
+/**
+ * Component to display a card.
+ *
+ * @param style - The style to apply to the card
+ * @param contentTemplate - The template to use for the content
+ * @param headerTemplate - The template to use for the header
+ * @param titleTemplate - The template to use for the title
+ * @param subtitleTemplate - The template to use for the subtitle
+ * @param footerTemplate - The template to use for the footer
+ * @returns The card component
+ */
 @Component({
   selector: 'fp-card',
   standalone: true,
