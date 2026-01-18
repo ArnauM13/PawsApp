@@ -2,8 +2,13 @@ import { Component } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { LanguageDropdownComponent } from '../language-dropdown/language-dropdown.component';
+import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
 
+/**
+ * Component to display the topbar.
+ *
+ * @returns The topbar component
+ */
 @Component({
   selector: 'fp-topbar',
   standalone: true,
