@@ -5,13 +5,21 @@ import { Pet } from '../../models/pet.model';
 
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
+import { PetListItemComponent } from '../../components/pet-list-item';
 import { TranslateModule } from '@ngx-translate/core';
 import { calculatePage, getRowsPerPage } from '@shared/utils';
 import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'fp-home',
-  imports: [DataViewComponent, PetCardComponent, TopbarComponent, TranslateModule, SkeletonModule],
+  imports: [
+    DataViewComponent,
+    PetCardComponent,
+    PetListItemComponent,
+    TopbarComponent,
+    TranslateModule,
+    SkeletonModule
+  ],
   template: `
   <div class="flex flex-col h-screen p-5">
 
@@ -30,27 +38,36 @@ import { SkeletonModule } from 'primeng/skeleton';
       (layoutChange)="onLayoutChange($event)">
 
       <ng-template #listItemTemplate let-pet>
-        <fp-pet-card [pet]="pet" />
+        <fp-pet-list-item [pet]="pet" />
       </ng-template>
       <ng-template #gridItemTemplate let-pet>
         <fp-pet-card [pet]="pet" />
       </ng-template>
 
       <ng-template #listSkeletonTemplate>
-        <div class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 border-t border-surface-200 dark:border-surface-700">
-          <p-skeleton class="w-9/12! sm:w-64! xl:w-40! h-24! mx-auto" />
-          <div class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6">
-            <div class="flex flex-col items-center sm:items-start gap-4">
-              <p-skeleton width="8rem" height="2rem" />
-              <p-skeleton width="6rem" height="1rem" />
-              <div class="flex items-center gap-4">
+        <div
+          class="flex items-center gap-4 p-4 border-b"
+          [style.border-bottom-color]="'var(--p-surface-border, #e5e7eb)'">
+          <div class="shrink-0">
+            <p-skeleton width="6rem" height="6rem" class="sm:w-8! sm:h-8!" shape="square" />
+          </div>
+
+          <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <p-skeleton width="10rem" height="1.5rem" />
+                <p-skeleton width="3rem" height="1.25rem" shape="circle" />
+                <p-skeleton width="2rem" height="1rem" />
+              </div>
+              <p-skeleton width="5rem" height="1rem" class="mb-2" />
+              <div class="flex flex-wrap gap-3">
                 <p-skeleton width="6rem" height="1rem" />
-                <p-skeleton width="3rem" height="1rem" />
+                <p-skeleton width="6rem" height="1rem" />
+                <p-skeleton width="6rem" height="1rem" />
               </div>
             </div>
-            <div class="flex sm:flex-col items-center sm:items-end gap-4 sm:gap-2">
-              <p-skeleton width="4rem" height="2rem" />
-              <p-skeleton size="3rem" shape="circle" />
+            <div class="shrink-0">
+              <p-skeleton width="8rem" height="2.5rem" />
             </div>
           </div>
         </div>
