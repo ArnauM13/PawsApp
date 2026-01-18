@@ -1,4 +1,4 @@
-import { Component, input, effect, computed, TemplateRef, output } from '@angular/core';
+import { Component, input, effect, computed, TemplateRef, output, signal } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
 import { PaginatorModule } from 'primeng/paginator';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -32,7 +32,7 @@ export type DataViewLayout = 'list' | 'grid';
     @if (isLoading() || hasResults()) {
       <p-dataview
         [value]="dataItems()"
-        [layout]="currentLayout"
+        [layout]="currentLayout()"
         [paginator]="hasResults()"
         [rows]="rowsPerPage()"
         [lazy]="lazy()"
@@ -50,9 +50,10 @@ export type DataViewLayout = 'list' | 'grid';
               }
               <div class="flex justify-end">
                 <p-selectbutton
-                  [(ngModel)]="currentLayout"
+                  [ngModel]="currentLayout()"
                   [options]="layoutOptions"
-                  [allowEmpty]="false">
+                  [allowEmpty]="false"
+                  (ngModelChange)="onLayoutChangeFromButton($event)">
                   <ng-template #item let-item>
                     <i [class]="item === 'list' ? 'pi pi-bars' : 'pi pi-th-large'"></i>
                   </ng-template>
@@ -122,14 +123,15 @@ export class DataViewComponent<T> {
   lazyLoad = output<{ first: number; rows: number }>();
   layoutChange = output<DataViewLayout>();
 
-  currentLayout: DataViewLayout = 'grid';
   layoutOptions: DataViewLayout[] = ['list', 'grid'];
+
+  currentLayout = computed(() => this.layout());
 
   rowsPerPage = computed(() => {
     if (this.rows() !== undefined) {
       return this.rows()!;
     }
-    return PAGINATION_CONFIG[this.currentLayout];
+    return PAGINATION_CONFIG[this.currentLayout()];
   });
 
   skeletonArray = computed(() => {
@@ -142,14 +144,8 @@ export class DataViewComponent<T> {
 
   readonly gridContainerClass = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4';
 
-  constructor() {
-    effect(() => {
-      const newLayout = this.layout();
-      if (this.currentLayout !== newLayout) {
-        this.currentLayout = newLayout;
-        this.layoutChange.emit(newLayout);
-      }
-    });
+  onLayoutChangeFromButton(newLayout: DataViewLayout): void {
+    this.layoutChange.emit(newLayout);
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
