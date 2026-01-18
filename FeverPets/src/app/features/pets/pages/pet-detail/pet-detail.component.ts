@@ -1,15 +1,14 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject, EMPTY } from 'rxjs';
-import { takeUntil, switchMap } from 'rxjs/operators';
-import { ImageFallbackDirective } from '@shared/directives';
+import { EMPTY, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { APP_CONFIG } from '@core/config';
-
-import { PetsService } from '../../services/pets.service';
-import { Pet } from '../../models/pet.model';
-import { PetInfoComponent } from '../../components/pet-info';
+import { PetInfoComponent } from '@features/pets/components';
+import { Pet } from '@features/pets/models';
+import { PetsService } from '@features/pets/services';
+import { ImageFallbackDirective } from '@shared/directives';
 import { TopbarComponent } from '@shared/ui';
 
 @Component({

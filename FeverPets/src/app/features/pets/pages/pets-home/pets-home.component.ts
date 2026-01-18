@@ -1,19 +1,16 @@
-import { Component, inject, signal, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { SelectItem } from 'primeng/api';
+import { SelectModule } from 'primeng/select';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-import { PetsDataService, PetsSortService, PetsLayoutService } from '../../services';
-import { DataViewComponent, TopbarComponent } from '@shared/ui';
-import { PetCardComponent } from '../../components/pet-card/pet-card.component';
-import { PetListItemComponent } from '../../components/pet-list-item';
-import { PetOfTheDayComponent } from '../../components/pet-of-the-day';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { PetCardComponent, PetListItemComponent, PetOfTheDayComponent } from '@features/pets/components';
+import { PetsDataService, PetsLayoutService, PetsSortService } from '@features/pets/services';
 import { calculatePage, getRowsPerPage } from '@shared/utils';
-import { SkeletonModule } from 'primeng/skeleton';
-import { SelectModule } from 'primeng/select';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
-import { SelectItem } from 'primeng/api';
+import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
 @Component({
   selector: 'fp-home',

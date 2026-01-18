@@ -1,5 +1,5 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { Pet } from '../models/pet.model';
+import { computed, Injectable, signal } from '@angular/core';
+import { Pet } from '@features/pets/models';
 
 export interface SortState {
   sortField: string | undefined;

@@ -1,15 +1,14 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ImageFallbackDirective } from '@shared/directives';
 import { APP_CONFIG } from '@core/config';
-
-import { PetsService } from '../../services/pets.service';
-import { Pet } from '../../models/pet.model';
-import { getPetOfTheDay } from '../../utils/pet-of-the-day.util';
+import { Pet } from '@features/pets/models';
+import { PetsService } from '@features/pets/services';
+import { getPetOfTheDay } from '@features/pets/utils';
+import { ImageFallbackDirective } from '@shared/directives';
 
 @Component({
   selector: 'fp-pet-of-the-day',

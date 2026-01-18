@@ -1,4 +1,4 @@
-import { Pet } from '../models/pet.model';
+import { Pet } from '@features/pets/models';
 
 /**
  * Gets a deterministic seed based on the current date (YYYY-MM-DD)

@@ -1,8 +1,8 @@
-import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { HealthStatus } from '../../models/pet.model';
-import { getHealthBadgeInfo } from '../../utils/pet-health.util';
+import { HealthStatus } from '@features/pets/models';
+import { getHealthBadgeInfo } from '@features/pets/utils';
 
 /**
  * Component to display pet health status with visual badge.

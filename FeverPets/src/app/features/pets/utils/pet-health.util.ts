@@ -1,4 +1,4 @@
-import { Pet, HealthStatus } from '../models/pet.model';
+import { HealthStatus, Pet } from '@features/pets/models';
 
 export interface HealthBadgeInfo {
   status: HealthStatus;
