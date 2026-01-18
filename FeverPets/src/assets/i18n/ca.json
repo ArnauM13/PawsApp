@@ -1,6 +1,9 @@
 {
   "WELCOME": "Benvingut",
   "TITLE": "FeverPets",
+  "APP": {
+    "TITLE": "FeverPets"
+  },
   "PETS": {
     "TITLE": "Mascotes",
     "LIST": "Llista de mascotes",
