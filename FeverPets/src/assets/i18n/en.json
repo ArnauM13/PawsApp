@@ -12,6 +12,10 @@
     "HEIGHT": "Height",
     "LENGTH": "Length",
     "LIVES": "Lives",
+    "CATEGORY": "Category",
+    "DESCRIPTION": "Description",
+    "MEASUREMENTS": "Measurements",
+    "NOT_FOUND": "Pet not found",
     "KIND": {
       "DOG": "Dog",
       "CAT": "Cat"
@@ -23,7 +27,8 @@
     }
   },
   "COMMON": {
-    "LOADING": "Loading...",
+    "LOADING": "Loading",
+    "BACK": "Back",
     "ERROR": "An error occurred",
     "NO_DATA": "No data available"
   }

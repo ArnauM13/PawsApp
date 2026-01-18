@@ -1,4 +1,5 @@
 import { Component, input, computed } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { Pet } from '../../models/pet.model';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,12 +18,13 @@ import { calculateHealth } from '../../utils';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     TranslateModule,
     PetInfoComponent
   ],
   template: `
     <div
-      class="flex items-center gap-4 p-4 border-b hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+      class="flex items-center gap-4 p-4 border-b hover:bg-surface-50 transition-colors"
       [style.border-bottom-color]="'var(--p-surface-border, #e5e7eb)'">
       <div class="shrink-0">
         <img
@@ -37,10 +39,11 @@ import { calculateHealth } from '../../utils';
         </div>
 
         <div class="shrink-0">
-          <button
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors cursor-pointer">
+          <a
+            [routerLink]="['/pet', pet().id]"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors cursor-pointer inline-block">
             {{ 'PETS.SEE_MORE' | translate }}
-          </button>
+          </a>
         </div>
       </div>
     </div>
