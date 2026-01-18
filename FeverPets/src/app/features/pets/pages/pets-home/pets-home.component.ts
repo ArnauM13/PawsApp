@@ -1,10 +1,8 @@
-import { Component, inject, signal, computed, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Component, inject, signal, OnDestroy, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { PetsService } from '../../services/pets.service';
-import { Pet } from '../../models/pet.model';
-
+import { PetsDataService, PetsSortService } from '../../services';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
 import { PetListItemComponent } from '../../components/pet-list-item';
@@ -37,13 +35,13 @@ import { SelectItem } from 'primeng/api';
     <fp-pet-of-the-day />
 
     <fp-data-view
-      [dataItems]="pets()"
-      [totalRecords]="totalRecords()"
-      [isLoading]="isLoading()"
+      [dataItems]="dataService.pets()"
+      [totalRecords]="dataService.totalRecords()"
+      [isLoading]="dataService.isLoadingSignal()"
       layout="grid"
       [sortField]="undefined"
       [sortOrder]="undefined"
-      [lazy]="!sortField()"
+      [lazy]="!sortService.hasSorting()"
       [headerTemplate]="headerTemplate"
       [listItemTemplate]="listItemTemplate"
       [gridItemTemplate]="gridItemTemplate"
@@ -129,51 +127,30 @@ import { SelectItem } from 'primeng/api';
   `,
 })
 export class PetsHomeComponent implements OnInit, OnDestroy {
-  private readonly petsService = inject(PetsService);
+  protected readonly dataService = inject(PetsDataService);
+  protected readonly sortService = inject(PetsSortService);
   private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
-  private currentSubscription?: Subscription;
 
   private readonly currentLayout = signal<'list' | 'grid'>('grid');
-  private readonly currentPets = signal<Pet[]>([]);
-  private readonly allPets = signal<Pet[]>([]);
-  private readonly totalPets = signal<number>(0);
-  protected readonly isLoading = signal(false);
-  private readonly isLoadingAllPets = signal(false);
-  private allPetsSubscription?: Subscription;
-
-  protected readonly sortField = signal<string | undefined>(undefined);
-  protected readonly sortOrder = signal<number | undefined>(undefined);
-  protected sortKey: string | undefined;
   protected sortOptions: SelectItem[] = [];
 
-  protected readonly pets = computed(() => {
-    const sortField = this.sortField();
-    const sortOrder = this.sortOrder();
+  protected get sortKey(): string | undefined {
+    return this.sortService.sortKey();
+  }
 
-    if (sortField && sortOrder) {
-      const allPets = this.allPets();
-      if (allPets.length > 0) {
-        return this.sortPets([...allPets], sortField, sortOrder);
-      }
-      return this.currentPets();
-    }
-    return this.currentPets();
-  });
-
-  protected readonly totalRecords = computed(() => {
-    const sortField = this.sortField();
-    const allPets = this.allPets();
-
-    return (sortField && allPets.length > 0) ? allPets.length : this.totalPets();
-  });
+  protected set sortKey(value: string | undefined) {
+    this.sortService.sortKey.set(value);
+  }
 
   constructor() {
-    this.loadPage(1);
+    const rows = getRowsPerPage(this.currentLayout());
+    this.dataService.loadPage(1, rows);
   }
 
   ngOnInit(): void {
     this.initializeSortOptions();
+    this.handleSortChange();
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -198,106 +175,37 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
 
   onSortChange(event: any): void {
     const value = event.value;
-
-    if (value && value.indexOf('!') === 0) {
-      this.sortOrder.set(-1);
-      this.sortField.set(value.substring(1, value.length));
-    } else if (value) {
-      this.sortOrder.set(1);
-      this.sortField.set(value);
-    } else {
-      this.sortOrder.set(undefined);
-      this.sortField.set(undefined);
-    }
-
-    if (value) {
-      this.loadAllPetsInBackground();
-    } else {
-      this.allPets.set([]);
-      this.loadPage(1);
-    }
+    this.sortService.applySort(value);
+    this.handleSortChange();
   }
 
-  private loadAllPetsInBackground(): void {
-    if (this.isLoadingAllPets() || this.allPets().length > 0) {
-      return;
+  private handleSortChange(): void {
+    if (this.sortService.hasSorting()) {
+      this.dataService.loadAllPetsInBackground();
+    } else {
+      this.dataService.clearAllPets();
+      const rows = getRowsPerPage(this.currentLayout());
+      this.dataService.loadPage(1, rows);
     }
-
-    this.isLoadingAllPets.set(true);
-    this.allPetsSubscription?.unsubscribe();
-
-    this.allPetsSubscription = this.petsService.getPets()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (pets) => {
-          this.allPets.set(pets);
-          this.isLoadingAllPets.set(false);
-        },
-        error: () => {
-          this.isLoadingAllPets.set(false);
-        }
-      });
-  }
-
-  private sortPets(pets: Pet[], sortField: string, sortOrder: number): Pet[] {
-    return pets.sort((a, b) => {
-      let aValue: any = a[sortField as keyof Pet];
-      let bValue: any = b[sortField as keyof Pet];
-
-      // Handle string comparison
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
-      }
-
-      if (aValue < bValue) {
-        return sortOrder === 1 ? -1 : 1;
-      }
-      if (aValue > bValue) {
-        return sortOrder === 1 ? 1 : -1;
-      }
-      return 0;
-    });
   }
 
   ngOnDestroy(): void {
-    this.currentSubscription?.unsubscribe();
-    this.allPetsSubscription?.unsubscribe();
+    this.dataService.destroy();
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   onLayoutChange(layout: 'list' | 'grid'): void {
     this.currentLayout.set(layout);
-    this.loadPage(1);
+    const rows = getRowsPerPage(layout);
+    this.dataService.loadPage(1, rows);
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
-    const page = calculatePage(event.first, event.rows);
-    const sortField = this.sortField();
-
-    if (!sortField || this.allPets().length === 0) {
-      this.loadPage(page);
+    if (this.dataService.shouldLoadPage()) {
+      const page = calculatePage(event.first, event.rows);
+      const rows = getRowsPerPage(this.currentLayout());
+      this.dataService.loadPage(page, rows);
     }
-  }
-
-  private loadPage(page: number): void {
-    this.currentSubscription?.unsubscribe();
-
-    this.isLoading.set(true);
-    const rows = getRowsPerPage(this.currentLayout());
-
-    this.currentSubscription = this.petsService.getPetsPaginated(page, rows)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.currentPets.set(response.data);
-          this.totalPets.set(response.total);
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        }
-      });
   }
 }
