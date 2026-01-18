@@ -6,10 +6,11 @@ import { Pet } from '../../models/pet.model';
 
 import { DataViewComponent } from '../../../../shared/ui/dataview/dataview.component';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'fp-home',
-  imports: [DataViewComponent, PetCardComponent],
+  imports: [DataViewComponent, PetCardComponent, TranslateModule],
   template: `
     <div class="p-4">
       <fp-data-view
@@ -19,7 +20,7 @@ import { PetCardComponent } from '../../components/pet-card/pet-card.component';
         [itemTemplate]="itemTemplate">
 
         <ng-template #headerTemplate>
-          <h1>Pets</h1>
+          <h1>{{ 'PETS.TITLE' | translate }}</h1>
         </ng-template>
 
         <ng-template #itemTemplate let-pet>
