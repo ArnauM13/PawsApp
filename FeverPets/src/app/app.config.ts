@@ -10,13 +10,24 @@ import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 
+// Recuperar idioma de localStorage o usar 'en' per defecte
+const getInitialLang = (): string => {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const savedLang = localStorage.getItem('lang');
+    if (savedLang && ['en', 'es', 'ca'].includes(savedLang)) {
+      return savedLang;
+    }
+  }
+  return 'en';
+};
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withViewTransitions()),
     provideHttpClient(),
     provideTranslateService({
-      lang: 'en',
+      lang: getInitialLang(),
       fallbackLang: 'en',
       loader: provideTranslateHttpLoader({
           prefix: '/i18n/',
