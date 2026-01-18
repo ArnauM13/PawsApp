@@ -29,9 +29,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
     <fp-topbar />
 
-    <div class="mb-4">
-      <fp-pet-of-the-day />
-    </div>
+    <fp-pet-of-the-day />
 
     <fp-data-view
       [dataItems]="pets()"
