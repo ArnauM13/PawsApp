@@ -16,6 +16,7 @@
     "DESCRIPTION": "Descripción",
     "MEASUREMENTS": "Medidas",
     "NOT_FOUND": "Mascota no encontrada",
+    "PET_OF_THE_DAY": "Mascota Favorita del Día",
     "KIND": {
       "DOG": "Perro",
       "CAT": "Gato"
