@@ -35,21 +35,21 @@ export function calculateHealth(pet: Pet): HealthStatus {
 export function getHealthBadgeInfo(healthStatus: HealthStatus): HealthBadgeInfo {
   const statusConfig: Record<HealthStatus, { cssClasses: string; translationKey: string }> = {
     'very healthy': {
-      cssClasses: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      cssClasses: 'bg-green-100 text-green-800',
       translationKey: 'PETS.HEALTH.VERY_HEALTHY'
     },
     'healthy': {
-      cssClasses: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      cssClasses: 'bg-blue-100 text-blue-800',
       translationKey: 'PETS.HEALTH.HEALTHY'
     },
     'unhealthy': {
-      cssClasses: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      cssClasses: 'bg-red-100 text-red-800',
       translationKey: 'PETS.HEALTH.UNHEALTHY'
     }
   };
 
   const config = statusConfig[healthStatus] || {
-    cssClasses: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+    cssClasses: 'bg-gray-100 text-gray-800',
     translationKey: 'PETS.HEALTH.UNHEALTHY'
   };
 

@@ -1,4 +1,5 @@
 import { Component, input, computed } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CardComponent } from '@shared/ui';
 import { Pet } from '../../models/pet.model';
 import { CommonModule } from '@angular/common';
@@ -18,6 +19,7 @@ import { calculateHealth } from '../../utils';
   imports: [
     CardComponent,
     CommonModule,
+    RouterModule,
     TranslateModule,
     PetInfoComponent
   ],
@@ -40,10 +42,11 @@ import { calculateHealth } from '../../utils';
 
       <ng-template #footerTemplate>
         <div class="flex gap-2 mt-4">
-          <button
-            class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors cursor-pointer">
+          <a
+            [routerLink]="['/pet', pet().id]"
+            class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors cursor-pointer text-center">
             {{ 'PETS.SEE_MORE' | translate }}
-          </button>
+          </a>
         </div>
       </ng-template>
     </fp-card>

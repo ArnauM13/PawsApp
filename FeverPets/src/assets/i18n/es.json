@@ -12,6 +12,10 @@
     "HEIGHT": "Altura",
     "LENGTH": "Longitud",
     "LIVES": "Vidas",
+    "CATEGORY": "Categoría",
+    "DESCRIPTION": "Descripción",
+    "MEASUREMENTS": "Medidas",
+    "NOT_FOUND": "Mascota no encontrada",
     "KIND": {
       "DOG": "Perro",
       "CAT": "Gato"
@@ -23,7 +27,8 @@
     }
   },
   "COMMON": {
-    "LOADING": "Cargando...",
+    "LOADING": "Cargando",
+    "BACK": "Volver",
     "ERROR": "Ha ocurrido un error",
     "NO_DATA": "No hay datos disponibles"
   }
