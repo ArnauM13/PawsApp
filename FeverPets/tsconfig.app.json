@@ -9,7 +9,9 @@
     "paths": {
       "@shared/*": ["src/app/shared/*"],
       "@core/*": ["src/app/core/*"],
-      "@core/config": ["src/app/core/config/index"]
+      "@core/config": ["src/app/core/config/index"],
+      "@features/*": ["src/app/features/*"],
+      "@features/pets/*": ["src/app/features/pets/*"]
     }
   },
   "include": [

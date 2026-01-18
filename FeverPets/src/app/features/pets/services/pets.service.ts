@@ -1,10 +1,9 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable, map, of } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable, of } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-
-import { API_CONFIG } from '../../../core/config/api.config';
-import { Pet } from '../models/pet.model';
+import { API_CONFIG } from '@core/config';
+import { Pet } from '@features/pets/models';
 
 export interface PaginatedResponse<T> {
   data: T[];

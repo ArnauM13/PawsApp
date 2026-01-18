@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { SelectModule } from 'primeng/select';
-import { TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SelectModule } from 'primeng/select';
 
 /**
  * Component to display a language dropdown.

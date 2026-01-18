@@ -1,13 +1,13 @@
-import { Component, input, computed } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { CardComponent } from '@shared/ui';
-import { ImageFallbackDirective } from '@shared/directives';
-import { APP_CONFIG } from '@core/config';
-import { Pet } from '../../models/pet.model';
 import { CommonModule } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { PetInfoComponent } from '../pet-info';
-import { calculateHealth } from '../../utils';
+import { APP_CONFIG } from '@core/config';
+import { PetInfoComponent } from '@features/pets/components';
+import { Pet } from '@features/pets/models';
+import { calculateHealth } from '@features/pets/utils';
+import { ImageFallbackDirective } from '@shared/directives';
+import { CardComponent } from '@shared/ui';
 
 /**
  * Component to display pet card information.
