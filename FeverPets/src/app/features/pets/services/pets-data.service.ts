@@ -4,14 +4,6 @@ import { takeUntil } from 'rxjs/operators';
 import { Pet } from '@features/pets/models';
 import { PaginatedResponse, PetsService } from './pets.service';
 
-/**
- * Service for managing paginated pets data.
- *
- * NOTE: This service uses server-side pagination and sorting.
- * All sorting is handled by the server to ensure performance with large datasets.
- *
- * For the main pets list, PetsListStore is used instead, which also uses server-side pagination.
- */
 @Injectable({
   providedIn: 'root'
 })
@@ -27,11 +19,6 @@ export class PetsDataService {
   readonly totalRecords = computed(() => this.totalPets());
   readonly isLoadingSignal = computed(() => this.isLoading());
 
-  /**
-   * Load paginated pets with server-side pagination
-   * @param page - Page number (starts at 1)
-   * @param limit - Number of items per page
-   */
   loadPage(page: number, limit: number): void {
     this.isLoading.set(true);
 
@@ -49,9 +36,6 @@ export class PetsDataService {
       });
   }
 
-  /**
-   * Cleanup method to be called when component is destroyed
-   */
   destroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
