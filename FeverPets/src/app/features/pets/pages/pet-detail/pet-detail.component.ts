@@ -7,7 +7,7 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { APP_CONFIG } from '@core/config';
 import { PetInfoComponent } from '@features/pets/components';
 import { Pet } from '@features/pets/models';
-import { PetsService } from '@features/pets/services';
+import { PetsApi } from '@features/pets/api';
 import { ImageFallbackDirective } from '@shared/directives';
 import { TopbarComponent } from '@shared/ui';
 
@@ -71,7 +71,7 @@ import { TopbarComponent } from '@shared/ui';
 export class PetDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly petsService = inject(PetsService);
+  private readonly api = inject(PetsApi);
   private readonly destroy$ = new Subject<void>();
 
   protected readonly pet = signal<Pet | null>(null);
@@ -92,7 +92,7 @@ export class PetDetailComponent implements OnInit, OnDestroy {
           this.pet.set(null);
           this.isLoading.set(true);
 
-          return this.petsService.getPetById(parseInt(petId, 10));
+          return this.api.getById(parseInt(petId, 10));
         }),
         takeUntil(this.destroy$)
       )
