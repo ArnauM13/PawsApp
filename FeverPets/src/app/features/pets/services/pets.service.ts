@@ -26,14 +26,6 @@ export class PetsService {
   private readonly CACHE_DURATION = 5 * 60 * 1000;
 
   /**
-   * Get all pets from the API
-   * @returns Observable with array of pets
-   */
-  getPets(): Observable<Pet[]> {
-    return this.http.get<Pet[]>(`${this.baseUrl}${API_CONFIG.endpoints.pets}`);
-  }
-
-  /**
    * Get paginated pets from the API with caching
    * Uses json-server pagination: _page and _limit query params
    * @param page Page number (starts at 1)
