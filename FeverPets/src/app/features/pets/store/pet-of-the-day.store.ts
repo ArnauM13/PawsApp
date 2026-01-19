@@ -11,6 +11,13 @@ interface PetOfTheDayState {
   dayHash: number | null;
 }
 
+/**
+ * Store for managing the "Pet of the Day" feature state.
+ *
+ * This store handles the deterministic selection of a pet for each calendar day.
+ * The same pet is selected for the entire day, ensuring consistency across
+ * user sessions. Uses a day-based hash to determine the pet ID.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -24,10 +31,34 @@ export class PetOfTheDayStore {
     dayHash: null
   });
 
+  /** Observable signal of the current pet of the day */
   readonly pet = computed(() => this.state().pet);
+
+  /** Observable signal indicating if the pet is currently being loaded */
   readonly loading = computed(() => this.state().loading);
+
+  /** Observable signal of any error that occurred during loading */
   readonly error = computed(() => this.state().error);
 
+  /**
+   * Loads the pet of the day.
+   *
+   * This method:
+   * - Checks if a pet is already loaded for today (using day hash)
+   * - If not, fetches the total number of pets
+   * - Calculates a deterministic pet ID based on today's date
+   * - Fetches and stores the selected pet
+   *
+   * The same pet will be selected for the entire day, regardless of when
+   * this method is called.
+   *
+   * @example
+   * ```typescript
+   * store.load();
+   * // Later in the same day
+   * store.load(); // Returns cached pet, no new API call
+   * ```
+   */
   load(): void {
     const currentDayHash = getDaySeed();
     const state = this.state();
@@ -69,6 +100,17 @@ export class PetOfTheDayStore {
       });
   }
 
+  /**
+   * Forces a reload of the pet of the day.
+   *
+   * Clears the day hash cache and triggers a fresh load.
+   * Useful for testing or when you need to refresh the pet selection.
+   *
+   * @example
+   * ```typescript
+   * store.reload(); // Forces new pet selection
+   * ```
+   */
   reload(): void {
     this.state.update(s => ({ ...s, dayHash: null }));
     this.load();
