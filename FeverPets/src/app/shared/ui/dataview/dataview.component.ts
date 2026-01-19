@@ -35,6 +35,7 @@ export type DataViewLayout = 'list' | 'grid';
         [layout]="currentLayout()"
         [paginator]="hasResults()"
         [rows]="rowsPerPage()"
+        [first]="first()"
         [lazy]="lazy()"
         [totalRecords]="totalRecords()"
         [sortField]="sortField()"
@@ -107,6 +108,7 @@ export class DataViewComponent<T> {
   dataItems = input.required<T[]>();
   layout = input<DataViewLayout>('grid');
   rows = input<number>(6);
+  first = input<number>(0);
   totalRecords = input<number>(0);
   isLoading = input<boolean>(false);
   sortField = input<string | undefined>(undefined);

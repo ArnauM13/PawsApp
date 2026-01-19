@@ -1,15 +1,15 @@
 import { FormsModule } from '@angular/forms';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { SelectItem } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { PetCardComponent, PetListItemComponent, PetOfTheDayComponent } from '@features/pets/components';
-import { PetsDataService, PetsLayoutService, PetsSortService } from '@features/pets/services';
-import { calculatePage, getRowsPerPage } from '@shared/utils';
+import { PetsLayoutService } from '@features/pets/services';
+import { PetsListStore } from '@features/pets/store';
+import { PetsQuery } from '@features/pets/api';
+import { calculatePage, calculateFirst, getRowsPerPage } from '@shared/utils';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
 @Component({
@@ -33,14 +33,16 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
     <fp-pet-of-the-day />
 
-    <fp-data-view
-      [dataItems]="dataService.pets()"
-      [totalRecords]="dataService.totalRecords()"
-      [isLoading]="dataService.isLoadingSignal()"
+      <fp-data-view
+      [dataItems]="store.pets()"
+      [totalRecords]="store.total()"
+      [isLoading]="store.loading()"
       [layout]="layoutService.layout()"
-      [sortField]="undefined"
-      [sortOrder]="undefined"
-      [lazy]="!sortService.hasSorting()"
+      [rows]="rowsPerPage()"
+      [first]="currentFirst()"
+      [sortField]="currentSortField()"
+      [sortOrder]="currentSortOrder()"
+      [lazy]="true"
       [headerTemplate]="headerTemplate"
       [listItemTemplate]="listItemTemplate"
       [gridItemTemplate]="gridItemTemplate"
@@ -59,7 +61,7 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
             [placeholder]="'PETS.SORT.BY' | translate"
             (onChange)="onSortChange($event)"
             class="w-full md:w-auto" />
-          @if (sortService.hasSorting()) {
+          @if (hasSorting()) {
             <p-button
               icon="pi pi-times"
               [label]="'PETS.SORT.RESET' | translate"
@@ -136,36 +138,87 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
   </div>
   `,
 })
-export class PetsHomeComponent implements OnInit, OnDestroy {
-  protected readonly dataService = inject(PetsDataService);
-  protected readonly sortService = inject(PetsSortService);
+export class PetsHomeComponent implements OnInit {
+  protected readonly store = inject(PetsListStore);
   protected readonly layoutService = inject(PetsLayoutService);
   private readonly translate = inject(TranslateService);
-  private readonly destroy$ = new Subject<void>();
 
   protected sortOptions: SelectItem[] = [];
 
+  protected readonly currentSortField = computed(() => {
+    const query = this.store.getCurrentQuery();
+    return query.sortField;
+  });
+
+  protected readonly currentSortOrder = computed(() => {
+    const query = this.store.getCurrentQuery();
+    if (!query.sortOrder) return undefined;
+
+    return query.sortOrder === 'asc' ? 1 : -1;
+  });
+
+  protected readonly hasSorting = computed(() => {
+    return !!this.currentSortField();
+  });
+
   protected get sortKey(): string | undefined {
-    return this.sortService.sortKey();
+    const sortField = this.currentSortField();
+    const sortOrder = this.currentSortOrder();
+
+    if (!sortField || !sortOrder) {
+      return undefined;
+    }
+
+    const isDesc = sortOrder === -1;
+    return isDesc ? `!${sortField}` : sortField;
   }
 
   protected set sortKey(value: string | undefined) {
-    this.sortService.sortKey.set(value);
+    if (value) {
+      const isDesc = value.startsWith('!');
+      const sortField = isDesc ? value.substring(1) : value;
+      const sortOrder: 'asc' | 'desc' = isDesc ? 'desc' : 'asc';
+      this.store.setSorting(sortField, sortOrder);
+    } else {
+      this.store.clearSorting();
+    }
   }
 
-  constructor() {
-    const rows = getRowsPerPage(this.layoutService.layout());
-    this.dataService.loadPage(1, rows);
-  }
+  protected readonly rowsPerPage = computed(() => {
+    return getRowsPerPage(this.layoutService.layout());
+  });
+
+  protected readonly currentFirst = computed(() => {
+    const query = this.store.getCurrentQuery();
+    const page = query.page || 1;
+    const rows = this.rowsPerPage();
+    return calculateFirst(page, rows);
+  });
 
   ngOnInit(): void {
     this.initializeSortOptions();
-    this.handleSortChange();
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.initializeSortOptions();
-      });
+    this.translate.onLangChange.subscribe(() => {
+      this.initializeSortOptions();
+    });
+
+    const rows = getRowsPerPage(this.layoutService.layout());
+    const currentQuery = this.store.getCurrentQuery();
+
+    const queryToLoad: Partial<PetsQuery> = {
+      page: currentQuery.page || 1,
+      limit: rows
+    };
+
+    if (currentQuery.sortField) {
+      queryToLoad.sortField = currentQuery.sortField;
+      queryToLoad.sortOrder = currentQuery.sortOrder;
+    }
+
+    if (currentQuery.filters) {
+      queryToLoad.filters = currentQuery.filters;
+    }
+
+    this.store.updateQuery(queryToLoad, true);
   }
 
   private initializeSortOptions(): void {
@@ -184,43 +237,27 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(event: any): void {
-    const value = event.value;
-    this.sortService.applySort(value);
-    this.handleSortChange();
+    this.sortKey = event.value as string | undefined;
   }
 
   resetSort(): void {
-    this.sortService.clearSort();
-    this.handleSortChange();
-  }
-
-  private handleSortChange(): void {
-    if (this.sortService.hasSorting()) {
-      this.dataService.loadAllPetsInBackground();
-    } else {
-      this.dataService.clearAllPets();
-      const rows = getRowsPerPage(this.layoutService.layout());
-      this.dataService.loadPage(1, rows);
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.dataService.destroy();
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.sortKey = undefined;
   }
 
   onLayoutChange(layout: 'list' | 'grid'): void {
     this.layoutService.setLayout(layout);
     const rows = getRowsPerPage(layout);
-    this.dataService.loadPage(1, rows);
+
+    this.store.updateQuery({
+      page: 1,
+      limit: rows
+    });
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
-    if (this.dataService.shouldLoadPage()) {
-      const page = calculatePage(event.first, event.rows);
-      const rows = getRowsPerPage(this.layoutService.layout());
-      this.dataService.loadPage(page, rows);
-    }
+    const rows = this.rowsPerPage();
+    const page = calculatePage(event.first, rows);
+
+    this.store.updateQuery({ page, limit: rows });
   }
 }

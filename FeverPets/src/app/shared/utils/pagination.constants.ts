@@ -1,8 +1,8 @@
 import { DataViewLayout } from '@shared/ui/dataview';
 
 /**
- * Configuració de paginació per layout
- * Defineix quantes files mostrar per pàgina segons el tipus de layout
+ * Pagination configuration per layout
+ * Define the number of rows per page based on the layout
  */
 export const PAGINATION_CONFIG: Record<DataViewLayout, number> = {
   list: 10,
@@ -10,19 +10,29 @@ export const PAGINATION_CONFIG: Record<DataViewLayout, number> = {
 };
 
 /**
- * Calcula el número de pàgina a partir de l'event de lazy load
- * @param first - Índex del primer element (0-based)
- * @param rows - Nombre d'elements per pàgina
- * @returns Número de pàgina (1-based)
+ * Calculate the page number from the lazy load event
+ * @param first - Index of the first element (0-based)
+ * @param rows - Number of elements per page
+ * @returns Page number (1-based)
  */
 export function calculatePage(first: number, rows: number): number {
   return Math.floor(first / rows) + 1;
 }
 
 /**
- * Obté el nombre de files per pàgina segons el layout
- * @param layout - Layout actual (list o grid)
- * @returns Nombre de files per pàgina
+ * Calculate the index of the first element (first) from the page number
+ * @param page - Page number (1-based)
+ * @param rows - Number of elements per page
+ * @returns Index of the first element (0-based)
+ */
+export function calculateFirst(page: number, rows: number): number {
+  return (page - 1) * rows;
+}
+
+/**
+ * Get the number of rows per page based on the layout
+ * @param layout - Layout (list or grid)
+ * @returns Number of rows per page
  */
 export function getRowsPerPage(layout: DataViewLayout): number {
   return PAGINATION_CONFIG[layout];
