@@ -3,7 +3,7 @@
  * This ensures the same pet is selected for the entire day
  * Same day → same seed → same petId
  */
-function getDaySeed(): number {
+export function getDaySeed(): number {
   const today = new Date();
   const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 
@@ -31,12 +31,7 @@ function getDaySeed(): number {
  * @returns A deterministic pet ID for today (1-based)
  *
  * @example
- * // Same day, same total → same petId
  * calculatePetIdForToday(30); // e.g., returns 15
- * calculatePetIdForToday(30); // e.g., returns 15 (same)
- *
- * // Different day → potentially different petId
- * // (next day) calculatePetIdForToday(30); // e.g., returns 7
  */
 export function calculatePetIdForToday(totalPets: number): number {
   if (totalPets <= 0) {
@@ -48,19 +43,4 @@ export function calculatePetIdForToday(totalPets: number): number {
 
   // Pet IDs are 1-based, so we add 1 to the index
   return index + 1;
-}
-
-/**
- * Calculates a deterministic pet ID for today
- * This version makes a reasonable assumption about the total number of pets
- * Use this only if you cannot get the total from the API
- *
- * @deprecated Use calculatePetIdForToday(totalPets) instead
- * @returns A deterministic pet ID for today
- */
-export function calculatePetIdForTodayWithDefault(): number {
-  // This is a fallback that assumes a reasonable default
-  // In production, you should always get the total from the API
-  const DEFAULT_TOTAL = 1000; // Reasonable default for scaling
-  return calculatePetIdForToday(DEFAULT_TOTAL);
 }

@@ -32,14 +32,14 @@ export class PetsListStore {
   readonly loading = computed(() => this.state().loading);
   readonly error = computed(() => this.state().error);
 
-  updateQuery(updates: Partial<PetsQuery>): void {
+  updateQuery(updates: Partial<PetsQuery>, forceLoad: boolean = false): void {
     const currentQuery = this.query();
     const newQuery: PetsQuery = {
       ...currentQuery,
       ...updates
     };
 
-    if (this.isQueryEqual(currentQuery, newQuery)) {
+    if (!forceLoad && this.isQueryEqual(currentQuery, newQuery)) {
       return;
     }
 
@@ -98,5 +98,18 @@ export class PetsListStore {
 
   getCurrentQuery(): PetsQuery {
     return this.query();
+  }
+
+  reset(): void {
+    this.state.set({
+      pets: [],
+      total: 0,
+      loading: false,
+      error: null
+    });
+    this.query.set({
+      page: 1,
+      limit: 6
+    });
   }
 }
