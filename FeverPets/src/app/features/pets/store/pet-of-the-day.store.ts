@@ -1,13 +1,14 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { PetsApi } from '@features/pets/api';
 import { Pet } from '@features/pets/models';
-import { calculatePetIdForToday } from '@features/pets/utils';
+import { calculatePetIdForToday, getDaySeed } from '@features/pets/utils';
 import { switchMap } from 'rxjs/operators';
 
 interface PetOfTheDayState {
   pet: Pet | null;
   loading: boolean;
   error: string | null;
+  dayHash: number | null;
 }
 
 @Injectable({
@@ -19,7 +20,8 @@ export class PetOfTheDayStore {
   private readonly state = signal<PetOfTheDayState>({
     pet: null,
     loading: false,
-    error: null
+    error: null,
+    dayHash: null
   });
 
   readonly pet = computed(() => this.state().pet);
@@ -27,7 +29,14 @@ export class PetOfTheDayStore {
   readonly error = computed(() => this.state().error);
 
   load(): void {
-    this.state.update(state => ({ ...state, loading: true, error: null }));
+    const currentDayHash = getDaySeed();
+    const state = this.state();
+
+    if (state.dayHash === currentDayHash && state.pet !== null) {
+      return;
+    }
+
+    this.state.update(s => ({ ...s, loading: true, error: null }));
 
     this.api.getTotal()
       .pipe(
@@ -45,20 +54,23 @@ export class PetOfTheDayStore {
           this.state.set({
             pet,
             loading: false,
-            error: null
+            error: null,
+            dayHash: currentDayHash
           });
         },
         error: (error) => {
           this.state.set({
             pet: null,
             loading: false,
-            error: error.message || 'Error loading pet of the day'
+            error: error.message || 'Error loading pet of the day',
+            dayHash: null
           });
         }
       });
   }
 
   reload(): void {
+    this.state.update(s => ({ ...s, dayHash: null }));
     this.load();
   }
 }

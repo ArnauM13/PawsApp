@@ -8,7 +8,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PetCardComponent, PetListItemComponent, PetOfTheDayComponent } from '@features/pets/components';
 import { PetsLayoutService } from '@features/pets/services';
 import { PetsListStore } from '@features/pets/store';
-import { calculatePage, getRowsPerPage } from '@shared/utils';
+import { PetsQuery } from '@features/pets/api';
+import { calculatePage, calculateFirst, getRowsPerPage } from '@shared/utils';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
 @Component({
@@ -38,6 +39,7 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
       [isLoading]="store.loading()"
       [layout]="layoutService.layout()"
       [rows]="rowsPerPage()"
+      [first]="currentFirst()"
       [sortField]="currentSortField()"
       [sortOrder]="currentSortOrder()"
       [lazy]="true"
@@ -143,7 +145,6 @@ export class PetsHomeComponent implements OnInit {
 
   protected sortOptions: SelectItem[] = [];
 
-  // Computed signals for sorting state
   protected readonly currentSortField = computed(() => {
     const query = this.store.getCurrentQuery();
     return query.sortField;
@@ -152,7 +153,7 @@ export class PetsHomeComponent implements OnInit {
   protected readonly currentSortOrder = computed(() => {
     const query = this.store.getCurrentQuery();
     if (!query.sortOrder) return undefined;
-    // Convert 'asc'/'desc' to PrimeNG format (1 for asc, -1 for desc)
+
     return query.sortOrder === 'asc' ? 1 : -1;
   });
 
@@ -187,16 +188,37 @@ export class PetsHomeComponent implements OnInit {
     return getRowsPerPage(this.layoutService.layout());
   });
 
+  protected readonly currentFirst = computed(() => {
+    const query = this.store.getCurrentQuery();
+    const page = query.page || 1;
+    const rows = this.rowsPerPage();
+    return calculateFirst(page, rows);
+  });
+
   ngOnInit(): void {
     this.initializeSortOptions();
     this.translate.onLangChange.subscribe(() => {
       this.initializeSortOptions();
     });
 
-    if (this.store.pets().length === 0 && !this.store.loading()) {
-      const rows = getRowsPerPage(this.layoutService.layout());
-      this.store.updateQuery({ page: 1, limit: rows });
+    const rows = getRowsPerPage(this.layoutService.layout());
+    const currentQuery = this.store.getCurrentQuery();
+
+    const queryToLoad: Partial<PetsQuery> = {
+      page: currentQuery.page || 1,
+      limit: rows
+    };
+
+    if (currentQuery.sortField) {
+      queryToLoad.sortField = currentQuery.sortField;
+      queryToLoad.sortOrder = currentQuery.sortOrder;
     }
+
+    if (currentQuery.filters) {
+      queryToLoad.filters = currentQuery.filters;
+    }
+
+    this.store.updateQuery(queryToLoad, true);
   }
 
   private initializeSortOptions(): void {
