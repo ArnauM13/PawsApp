@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, Input, input, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, input, TemplateRef } from '@angular/core';
 import { CardModule } from 'primeng/card';
 
 /**
@@ -15,7 +15,7 @@ import { CardModule } from 'primeng/card';
  */
 @Component({
   selector: 'fp-card',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CardModule, NgTemplateOutlet],
   template: `
     <p-card [style]="style()">
