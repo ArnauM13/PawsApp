@@ -37,6 +37,7 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
       [totalRecords]="store.total()"
       [isLoading]="store.loading()"
       [layout]="layoutService.layout()"
+      [rows]="rowsPerPage()"
       [sortField]="currentSortField()"
       [sortOrder]="currentSortOrder()"
       [lazy]="true"
@@ -160,6 +161,10 @@ export class PetsHomeComponent implements OnInit {
     return !!this.currentSortField();
   });
 
+  protected readonly rowsPerPage = computed(() => {
+    return getRowsPerPage(this.layoutService.layout());
+  });
+
   ngOnInit(): void {
     this.initializeSortOptions();
     this.translate.onLangChange.subscribe(() => {
@@ -218,8 +223,8 @@ export class PetsHomeComponent implements OnInit {
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
-    const page = calculatePage(event.first, event.rows);
-    const rows = getRowsPerPage(this.layoutService.layout());
+    const rows = this.rowsPerPage();
+    const page = calculatePage(event.first, rows);
 
     this.store.updateQuery({ page, limit: rows });
   }
