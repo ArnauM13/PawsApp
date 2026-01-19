@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 import { TranslateModule } from '@ngx-translate/core';
@@ -8,7 +8,7 @@ import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
 
 @Component({
   selector: 'fp-topbar',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MenubarModule, RouterModule, TranslateModule, CommonModule, LanguageDropdownComponent],
   template: `
     <p-menubar>

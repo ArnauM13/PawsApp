@@ -9,8 +9,7 @@ import { APP_CONFIG } from '@core/config';
  * <img [src]="pet.photo_url" [fpImageFallback]="APP_CONFIG.logoPath" [alt]="pet.name" />
  */
 @Directive({
-  selector: '[fpImageFallback]',
-  standalone: true
+  selector: '[fpImageFallback]'
 })
 export class ImageFallbackDirective {
   @Input() fpImageFallback: string = APP_CONFIG.logoPath;

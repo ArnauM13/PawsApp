@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectModule } from 'primeng/select';
 
@@ -10,7 +10,7 @@ import { SelectModule } from 'primeng/select';
  */
 @Component({
   selector: 'fp-language-dropdown',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SelectModule, FormsModule],
   template: `
     <p-select

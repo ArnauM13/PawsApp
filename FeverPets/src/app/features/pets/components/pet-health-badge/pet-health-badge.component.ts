@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { HealthStatus } from '@features/pets/models';
 import { getHealthBadgeInfo } from '@features/pets/utils';
@@ -12,7 +12,7 @@ import { getHealthBadgeInfo } from '@features/pets/utils';
  */
 @Component({
   selector: 'fp-pet-health-badge',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, TranslateModule],
   template: `
     <span

@@ -1,6 +1,6 @@
 import { FormsModule } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, effect, input, output, signal, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal, TemplateRef } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
 import { PaginatorModule } from 'primeng/paginator';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -26,7 +26,7 @@ export type DataViewLayout = 'list' | 'grid';
  */
 @Component({
   selector: 'fp-data-view',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DataViewModule, PaginatorModule, SelectButtonModule, SelectModule, FormsModule, NgTemplateOutlet, TranslateModule],
   template: `
     @if (isLoading() || hasResults()) {
