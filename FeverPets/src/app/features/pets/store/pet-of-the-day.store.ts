@@ -29,11 +29,9 @@ export class PetOfTheDayStore {
   load(): void {
     this.state.update(state => ({ ...state, loading: true, error: null }));
 
-    this.api.getPaged({ page: 1, limit: 1 })
+    this.api.getTotal()
       .pipe(
-        switchMap((response) => {
-          const total = response.total;
-
+        switchMap((total) => {
           if (total <= 0) {
             throw new Error('No pets available');
           }

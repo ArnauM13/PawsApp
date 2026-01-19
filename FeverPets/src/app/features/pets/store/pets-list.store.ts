@@ -39,8 +39,22 @@ export class PetsListStore {
       ...updates
     };
 
+    if (this.isQueryEqual(currentQuery, newQuery)) {
+      return;
+    }
+
     this.query.set(newQuery);
     this.loadPets(newQuery);
+  }
+
+  private isQueryEqual(query1: PetsQuery, query2: PetsQuery): boolean {
+    return (
+      query1.page === query2.page &&
+      query1.limit === query2.limit &&
+      query1.sortField === query2.sortField &&
+      query1.sortOrder === query2.sortOrder &&
+      JSON.stringify(query1.filters) === JSON.stringify(query2.filters)
+    );
   }
 
   setSorting(sortField: string | undefined, sortOrder: 'asc' | 'desc' | undefined): void {
