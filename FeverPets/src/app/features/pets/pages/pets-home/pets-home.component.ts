@@ -1,14 +1,13 @@
 import { FormsModule } from '@angular/forms';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { SelectItem } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { PetCardComponent, PetListItemComponent, PetOfTheDayComponent } from '@features/pets/components';
-import { PetsDataService, PetsLayoutService, PetsSortService } from '@features/pets/services';
+import { PetsLayoutService } from '@features/pets/services';
+import { PetsListStore } from '@features/pets/store';
 import { calculatePage, getRowsPerPage } from '@shared/utils';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
@@ -33,14 +32,14 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
     <fp-pet-of-the-day />
 
-    <fp-data-view
-      [dataItems]="dataService.pets()"
-      [totalRecords]="dataService.totalRecords()"
-      [isLoading]="dataService.isLoadingSignal()"
+      <fp-data-view
+      [dataItems]="store.pets()"
+      [totalRecords]="store.total()"
+      [isLoading]="store.loading()"
       [layout]="layoutService.layout()"
-      [sortField]="undefined"
-      [sortOrder]="undefined"
-      [lazy]="!sortService.hasSorting()"
+      [sortField]="currentSortField()"
+      [sortOrder]="currentSortOrder()"
+      [lazy]="true"
       [headerTemplate]="headerTemplate"
       [listItemTemplate]="listItemTemplate"
       [gridItemTemplate]="gridItemTemplate"
@@ -59,7 +58,7 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
             [placeholder]="'PETS.SORT.BY' | translate"
             (onChange)="onSortChange($event)"
             class="w-full md:w-auto" />
-          @if (sortService.hasSorting()) {
+          @if (hasSorting()) {
             <p-button
               icon="pi pi-times"
               [label]="'PETS.SORT.RESET' | translate"
@@ -136,36 +135,41 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
   </div>
   `,
 })
-export class PetsHomeComponent implements OnInit, OnDestroy {
-  protected readonly dataService = inject(PetsDataService);
-  protected readonly sortService = inject(PetsSortService);
+export class PetsHomeComponent implements OnInit {
+  protected readonly store = inject(PetsListStore);
   protected readonly layoutService = inject(PetsLayoutService);
   private readonly translate = inject(TranslateService);
-  private readonly destroy$ = new Subject<void>();
 
   protected sortOptions: SelectItem[] = [];
+  protected readonly sortKey = signal<string | undefined>(undefined);
 
-  protected get sortKey(): string | undefined {
-    return this.sortService.sortKey();
-  }
+  // Computed signals for sorting state
+  protected readonly currentSortField = computed(() => {
+    const query = this.store.getCurrentQuery();
+    return query.sortField;
+  });
 
-  protected set sortKey(value: string | undefined) {
-    this.sortService.sortKey.set(value);
-  }
+  protected readonly currentSortOrder = computed(() => {
+    const query = this.store.getCurrentQuery();
+    if (!query.sortOrder) return undefined;
+    // Convert 'asc'/'desc' to PrimeNG format (1 for asc, -1 for desc)
+    return query.sortOrder === 'asc' ? 1 : -1;
+  });
+
+  protected readonly hasSorting = computed(() => {
+    return !!this.currentSortField();
+  });
 
   constructor() {
     const rows = getRowsPerPage(this.layoutService.layout());
-    this.dataService.loadPage(1, rows);
+    this.store.updateQuery({ page: 1, limit: rows });
   }
 
   ngOnInit(): void {
     this.initializeSortOptions();
-    this.handleSortChange();
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.initializeSortOptions();
-      });
+    this.translate.onLangChange.subscribe(() => {
+      this.initializeSortOptions();
+    });
   }
 
   private initializeSortOptions(): void {
@@ -184,43 +188,39 @@ export class PetsHomeComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(event: any): void {
-    const value = event.value;
-    this.sortService.applySort(value);
-    this.handleSortChange();
-  }
+    const value = event.value as string | undefined;
+    this.sortKey.set(value);
 
-  resetSort(): void {
-    this.sortService.clearSort();
-    this.handleSortChange();
-  }
+    if (value) {
+      const isDesc = value.startsWith('!');
+      const sortField = isDesc ? value.substring(1) : value;
+      const sortOrder: 'asc' | 'desc' = isDesc ? 'desc' : 'asc';
 
-  private handleSortChange(): void {
-    if (this.sortService.hasSorting()) {
-      this.dataService.loadAllPetsInBackground();
+      this.store.setSorting(sortField, sortOrder);
     } else {
-      this.dataService.clearAllPets();
-      const rows = getRowsPerPage(this.layoutService.layout());
-      this.dataService.loadPage(1, rows);
+      this.store.clearSorting();
     }
   }
 
-  ngOnDestroy(): void {
-    this.dataService.destroy();
-    this.destroy$.next();
-    this.destroy$.complete();
+  resetSort(): void {
+    this.sortKey.set(undefined);
+    this.store.clearSorting();
   }
 
   onLayoutChange(layout: 'list' | 'grid'): void {
     this.layoutService.setLayout(layout);
     const rows = getRowsPerPage(layout);
-    this.dataService.loadPage(1, rows);
+
+    this.store.updateQuery({
+      page: 1,
+      limit: rows
+    });
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
-    if (this.dataService.shouldLoadPage()) {
-      const page = calculatePage(event.first, event.rows);
-      const rows = getRowsPerPage(this.layoutService.layout());
-      this.dataService.loadPage(page, rows);
-    }
+    const page = calculatePage(event.first, event.rows);
+    const rows = getRowsPerPage(this.layoutService.layout());
+
+    this.store.updateQuery({ page, limit: rows });
   }
 }
