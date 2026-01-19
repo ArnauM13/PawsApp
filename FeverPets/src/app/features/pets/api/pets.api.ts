@@ -18,6 +18,13 @@ export interface PaginatedPetsResponse {
   total: number;
 }
 
+/**
+ * Service for making HTTP requests to the Pets API.
+ *
+ * This service handles all communication with the backend API for pets,
+ * including pagination, sorting, and filtering. It abstracts the HTTP layer
+ * from the rest of the application.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -25,6 +32,29 @@ export class PetsApi {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = API_CONFIG.baseUrl;
 
+  /**
+   * Fetches a paginated list of pets from the API.
+   *
+   * Supports server-side pagination, sorting, and filtering. The response
+   * includes the total count of pets in the X-Total-Count header.
+   *
+   * @param query - Query parameters including page, limit, sortField, sortOrder, and filters
+   * @returns Observable of paginated pets response with data and total count
+   *
+   * @example
+   * ```typescript
+   * const query: PetsQuery = {
+   *   page: 1,
+   *   limit: 10,
+   *   sortField: 'name',
+   *   sortOrder: 'asc'
+   * };
+   * this.api.getPaged(query).subscribe(response => {
+   *   console.log(response.data); // Array of pets
+   *   console.log(response.total); // Total count
+   * });
+   * ```
+   */
   getPaged(query: PetsQuery): Observable<PaginatedPetsResponse> {
     let params = new HttpParams()
       .set('_page', query.page.toString())
@@ -53,10 +83,38 @@ export class PetsApi {
     );
   }
 
+  /**
+   * Fetches a single pet by its ID.
+   *
+   * @param id - The unique identifier of the pet
+   * @returns Observable of the pet object
+   *
+   * @example
+   * ```typescript
+   * this.api.getById(1).subscribe(pet => {
+   *   console.log(pet.name); // Pet name
+   * });
+   * ```
+   */
   getById(id: number): Observable<Pet> {
     return this.http.get<Pet>(`${this.baseUrl}${API_CONFIG.endpoints.petById(id)}`);
   }
 
+  /**
+   * Gets the total number of pets available in the system.
+   *
+   * This method makes a minimal request (1 item) to get only the
+   * X-Total-Count header, which is more efficient than fetching all pets.
+   *
+   * @returns Observable of the total number of pets
+   *
+   * @example
+   * ```typescript
+   * this.api.getTotal().subscribe(total => {
+   *   console.log(`There are ${total} pets in the system`);
+   * });
+   * ```
+   */
   getTotal(): Observable<number> {
     const params = new HttpParams()
       .set('_page', '1')

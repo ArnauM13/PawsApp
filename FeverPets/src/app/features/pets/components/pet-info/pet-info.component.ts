@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { PetHealthBadgeComponent } from '@features/pets/components';
 import { Pet } from '@features/pets/models';
-import { PetCentimetersPipe, PetLivesPipe, PetWeightPipe } from '@features/pets/pipes';
+import { PetCentimetersPipe, PetKindPipe, PetLivesPipe, PetWeightPipe } from '@features/pets/pipes';
 import { calculateHealth } from '@features/pets/utils';
 
 /**
@@ -15,12 +15,13 @@ import { calculateHealth } from '@features/pets/utils';
  */
 @Component({
   selector: 'fp-pet-info',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     TranslateModule,
     PetWeightPipe,
     PetCentimetersPipe,
+    PetKindPipe,
     PetLivesPipe,
     PetHealthBadgeComponent
   ],
@@ -30,14 +31,14 @@ import { calculateHealth } from '@features/pets/utils';
         <h2 [class]="layout() === 'grid' ? 'text-2xl font-bold' : 'text-2xl font-bold truncate'">{{ pet().name }}</h2>
         <div class="flex items-center gap-2">
           <fp-pet-health-badge [healthStatus]="healthStatus()" />
-          @if (pet().kind.toLowerCase() === 'cat' && pet().number_of_lives) {
+          @if (pet().number_of_lives) {
             <span class="text-xs leading-none">{{ pet().number_of_lives! | petLives }}</span>
           }
         </div>
       </div>
 
       <p [class]="layout() === 'grid' ? 'text-gray-500' : 'text-gray-500 mb-1'">
-        {{ 'PETS.KIND.' + pet().kind.toUpperCase() | translate }}
+        {{ pet().kind | petKind }}
       </p>
 
       <div class="flex flex-wrap gap-4 text-sm text-gray-600">

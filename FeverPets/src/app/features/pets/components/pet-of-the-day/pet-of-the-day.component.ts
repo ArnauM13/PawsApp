@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
@@ -8,7 +8,7 @@ import { ImageFallbackDirective } from '@shared/directives';
 
 @Component({
   selector: 'fp-pet-of-the-day',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     TranslateModule,
