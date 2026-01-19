@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { SelectItem } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
@@ -14,6 +14,7 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
 @Component({
   selector: 'fp-home',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DataViewComponent,
     PetCardComponent,

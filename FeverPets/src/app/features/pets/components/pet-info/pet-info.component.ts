@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { PetHealthBadgeComponent } from '@features/pets/components';
 import { Pet } from '@features/pets/models';
@@ -15,7 +15,7 @@ import { calculateHealth } from '@features/pets/utils';
  */
 @Component({
   selector: 'fp-pet-info',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     TranslateModule,
