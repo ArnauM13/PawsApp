@@ -1,5 +1,5 @@
 // Set to true to use local mock API, false to use remote API
-const USE_LOCAL_API = true;
+const USE_LOCAL_API = false;
 
 export const API_CONFIG = {
   baseUrl: USE_LOCAL_API
