@@ -23,15 +23,9 @@ export class PetsService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = API_CONFIG.baseUrl;
   private readonly cache = new Map<string, CacheEntry>();
+  // Cache duration: 5 minutes to reduce API calls while keeping data fresh
   private readonly CACHE_DURATION = 5 * 60 * 1000;
 
-  /**
-   * Get paginated pets from the API with caching
-   * Uses json-server pagination: _page and _limit query params
-   * @param page Page number (starts at 1)
-   * @param limit Number of items per page
-   * @returns Observable with paginated pets and total count
-   */
   getPetsPaginated(page: number, limit: number): Observable<PaginatedResponse<Pet>> {
     const cacheKey = `${page}-${limit}`;
     const cached = this.cache.get(cacheKey);
@@ -64,11 +58,6 @@ export class PetsService {
     );
   }
 
-  /**
-   * Get a specific pet by ID
-   * @param id Pet ID
-   * @returns Observable with pet data
-   */
   getPetById(id: number): Observable<Pet> {
     return this.http.get<Pet>(`${this.baseUrl}${API_CONFIG.endpoints.petById(id)}`);
   }

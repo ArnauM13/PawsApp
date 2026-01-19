@@ -1,4 +1,5 @@
 import { HealthStatus, Pet } from '@features/pets/models';
+import { HealthRuleFactory } from './health-rules';
 
 export interface HealthBadgeInfo {
   status: HealthStatus;
@@ -6,30 +7,18 @@ export interface HealthBadgeInfo {
   translationKey: string;
 }
 
-/**
- * Calculates the health status of a pet based on weight, height, length, and special rules.
- *
- * Health formula: weight / (height * length)
- * - 'unhealthy': below 2 or over 5
- * - 'healthy': between 3 and 5
- * - 'very healthy': between 2 and 3
- *
- * Special rule: If the pet is a cat with number_of_lives === 1, it's always 'unhealthy'
- */
+let healthRuleFactoryInstance: HealthRuleFactory | null = null;
+
+function getHealthRuleFactory(): HealthRuleFactory {
+  if (!healthRuleFactoryInstance) {
+    healthRuleFactoryInstance = new HealthRuleFactory();
+  }
+  return healthRuleFactoryInstance;
+}
+
 export function calculateHealth(pet: Pet): HealthStatus {
-  if (pet.kind.toLowerCase() === 'cat' && pet.number_of_lives === 1) {
-    return 'unhealthy';
-  }
-
-  const healthRatio = pet.weight / (pet.height * pet.length);
-
-  if (healthRatio < 2 || healthRatio > 5) {
-    return 'unhealthy';
-  } else if (healthRatio >= 2 && healthRatio < 3) {
-    return 'very healthy';
-  } else {
-    return 'healthy';
-  }
+  const factory = getHealthRuleFactory();
+  return factory.calculateHealth(pet);
 }
 
 export function getHealthBadgeInfo(healthStatus: HealthStatus): HealthBadgeInfo {
