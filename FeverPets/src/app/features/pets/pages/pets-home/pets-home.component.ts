@@ -142,7 +142,6 @@ export class PetsHomeComponent implements OnInit {
   private readonly translate = inject(TranslateService);
 
   protected sortOptions: SelectItem[] = [];
-  protected readonly sortKey = signal<string | undefined>(undefined);
 
   // Computed signals for sorting state
   protected readonly currentSortField = computed(() => {
@@ -160,6 +159,29 @@ export class PetsHomeComponent implements OnInit {
   protected readonly hasSorting = computed(() => {
     return !!this.currentSortField();
   });
+
+  protected get sortKey(): string | undefined {
+    const sortField = this.currentSortField();
+    const sortOrder = this.currentSortOrder();
+
+    if (!sortField || !sortOrder) {
+      return undefined;
+    }
+
+    const isDesc = sortOrder === -1;
+    return isDesc ? `!${sortField}` : sortField;
+  }
+
+  protected set sortKey(value: string | undefined) {
+    if (value) {
+      const isDesc = value.startsWith('!');
+      const sortField = isDesc ? value.substring(1) : value;
+      const sortOrder: 'asc' | 'desc' = isDesc ? 'desc' : 'asc';
+      this.store.setSorting(sortField, sortOrder);
+    } else {
+      this.store.clearSorting();
+    }
+  }
 
   protected readonly rowsPerPage = computed(() => {
     return getRowsPerPage(this.layoutService.layout());
@@ -193,23 +215,11 @@ export class PetsHomeComponent implements OnInit {
   }
 
   onSortChange(event: any): void {
-    const value = event.value as string | undefined;
-    this.sortKey.set(value);
-
-    if (value) {
-      const isDesc = value.startsWith('!');
-      const sortField = isDesc ? value.substring(1) : value;
-      const sortOrder: 'asc' | 'desc' = isDesc ? 'desc' : 'asc';
-
-      this.store.setSorting(sortField, sortOrder);
-    } else {
-      this.store.clearSorting();
-    }
+    this.sortKey = event.value as string | undefined;
   }
 
   resetSort(): void {
-    this.sortKey.set(undefined);
-    this.store.clearSorting();
+    this.sortKey = undefined;
   }
 
   onLayoutChange(layout: 'list' | 'grid'): void {
