@@ -160,16 +160,16 @@ export class PetsHomeComponent implements OnInit {
     return !!this.currentSortField();
   });
 
-  constructor() {
-    const rows = getRowsPerPage(this.layoutService.layout());
-    this.store.updateQuery({ page: 1, limit: rows });
-  }
-
   ngOnInit(): void {
     this.initializeSortOptions();
     this.translate.onLangChange.subscribe(() => {
       this.initializeSortOptions();
     });
+
+    if (this.store.pets().length === 0 && !this.store.loading()) {
+      const rows = getRowsPerPage(this.layoutService.layout());
+      this.store.updateQuery({ page: 1, limit: rows });
+    }
   }
 
   private initializeSortOptions(): void {

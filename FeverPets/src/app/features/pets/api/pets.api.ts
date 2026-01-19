@@ -56,4 +56,19 @@ export class PetsApi {
   getById(id: number): Observable<Pet> {
     return this.http.get<Pet>(`${this.baseUrl}${API_CONFIG.endpoints.petById(id)}`);
   }
+
+  getTotal(): Observable<number> {
+    const params = new HttpParams()
+      .set('_page', '1')
+      .set('_limit', '1');
+
+    return this.http.get<Pet[]>(`${this.baseUrl}${API_CONFIG.endpoints.pets}`, {
+      params,
+      observe: 'response'
+    }).pipe(
+      map((response: HttpResponse<Pet[]>) => {
+        return parseInt(response.headers.get('X-Total-Count') || '0', 10);
+      })
+    );
+  }
 }
