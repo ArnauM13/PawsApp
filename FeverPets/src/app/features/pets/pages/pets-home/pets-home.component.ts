@@ -1,14 +1,16 @@
 import { FormsModule } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SelectItem } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
 import { PetCardComponent, PetListItemComponent, PetOfTheDayComponent } from '@features/pets/components';
 import { PetsLayoutService } from '@features/pets/services';
 import { PetsListStore } from '@features/pets/store';
-import { PetsQuery } from '@features/pets/api';
 import { calculatePage, calculateFirst, getRowsPerPage } from '@shared/utils';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
@@ -139,10 +141,13 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
   </div>
   `,
 })
-export class PetsHomeComponent implements OnInit {
+export class PetsHomeComponent implements OnInit, OnDestroy {
   protected readonly store = inject(PetsListStore);
   protected readonly layoutService = inject(PetsLayoutService);
   private readonly translate = inject(TranslateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroy$ = new Subject<void>();
 
   protected sortOptions: SelectItem[] = [];
 
@@ -202,24 +207,26 @@ export class PetsHomeComponent implements OnInit {
       this.initializeSortOptions();
     });
 
-    const rows = getRowsPerPage(this.layoutService.layout());
-    const currentQuery = this.store.getCurrentQuery();
+    this.route.queryParams.pipe(
+      take(1),
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
+      const page = params['page'] ? Number(params['page']) : 1;
+      const sort = params['sort'] as string | undefined;
+      const order = (params['order'] === 'asc' || params['order'] === 'desc')
+        ? params['order'] as 'asc' | 'desc'
+        : undefined;
+      const rawLayout = params['layout'];
+      const layout = (rawLayout === 'list' || rawLayout === 'grid') ? rawLayout : 'grid';
 
-    const queryToLoad: Partial<PetsQuery> = {
-      page: currentQuery.page || 1,
-      limit: rows
-    };
+      this.layoutService.setLayout(layout);
+      this.store.updateQuery({ page, sortField: sort, sortOrder: order, limit: this.rowsPerPage() }, true);
+    });
+  }
 
-    if (currentQuery.sortField) {
-      queryToLoad.sortField = currentQuery.sortField;
-      queryToLoad.sortOrder = currentQuery.sortOrder;
-    }
-
-    if (currentQuery.filters) {
-      queryToLoad.filters = currentQuery.filters;
-    }
-
-    this.store.updateQuery(queryToLoad, true);
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private initializeSortOptions(): void {
@@ -239,10 +246,12 @@ export class PetsHomeComponent implements OnInit {
 
   onSortChange(event: any): void {
     this.sortKey = event.value as string | undefined;
+    this.syncToUrl();
   }
 
   resetSort(): void {
     this.sortKey = undefined;
+    this.syncToUrl();
   }
 
   onLayoutChange(layout: 'list' | 'grid'): void {
@@ -253,6 +262,7 @@ export class PetsHomeComponent implements OnInit {
       page: 1,
       limit: rows
     });
+    this.syncToUrl();
   }
 
   onLazyLoad(event: { first: number; rows: number }): void {
@@ -260,5 +270,17 @@ export class PetsHomeComponent implements OnInit {
     const page = calculatePage(event.first, rows);
 
     this.store.updateQuery({ page, limit: rows });
+    this.syncToUrl();
+  }
+
+  private syncToUrl(): void {
+    const query = this.store.getCurrentQuery();
+    const layout = this.layoutService.layout();
+    const queryParams: Record<string, string> = {};
+    if ((query.page ?? 1) > 1) queryParams['page'] = String(query.page);
+    if (query.sortField) queryParams['sort'] = query.sortField;
+    if (query.sortOrder) queryParams['order'] = query.sortOrder;
+    if (layout !== 'grid') queryParams['layout'] = layout;
+    this.router.navigate([], { relativeTo: this.route, queryParams, replaceUrl: true });
   }
 }
