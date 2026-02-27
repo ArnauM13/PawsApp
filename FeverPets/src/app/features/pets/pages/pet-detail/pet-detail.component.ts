@@ -8,6 +8,8 @@ import { APP_CONFIG } from '@core/config';
 import { PetInfoComponent } from '@features/pets/components';
 import { Pet } from '@features/pets/models';
 import { PetsApi } from '@features/pets/api';
+import { PetsLayoutService } from '@features/pets/services';
+import { PetsListStore } from '@features/pets/store';
 import { ImageFallbackDirective } from '@shared/directives';
 import { TopbarComponent } from '@shared/ui';
 
@@ -72,6 +74,8 @@ export class PetDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly api = inject(PetsApi);
+  private readonly store = inject(PetsListStore);
+  private readonly layoutService = inject(PetsLayoutService);
   private readonly destroy$ = new Subject<void>();
 
   protected readonly pet = signal<Pet | null>(null);
@@ -115,6 +119,13 @@ export class PetDetailComponent implements OnInit, OnDestroy {
   }
 
   protected goBack(): void {
-    this.router.navigate(['/']);
+    const query = this.store.getCurrentQuery();
+    const layout = this.layoutService.layout();
+    const queryParams: Record<string, string> = {};
+    if ((query.page ?? 1) > 1) queryParams['page'] = String(query.page);
+    if (query.sortField) queryParams['sort'] = query.sortField;
+    if (query.sortOrder) queryParams['order'] = query.sortOrder;
+    if (layout !== 'grid') queryParams['layout'] = layout;
+    this.router.navigate(['/'], { queryParams });
   }
 }
