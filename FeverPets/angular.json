@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "FeverPets": {
+    "PawsApp": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "FeverPets:build:production"
+              "buildTarget": "PawsApp:build:production"
             },
             "development": {
-              "buildTarget": "FeverPets:build:development"
+              "buildTarget": "PawsApp:build:development"
             }
           },
           "defaultConfiguration": "development"

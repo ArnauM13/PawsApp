@@ -7,7 +7,7 @@ import { PetOfTheDayStore } from '@features/pets/store';
 import { ImageFallbackDirective } from '@shared/directives';
 
 @Component({
-  selector: 'fp-pet-of-the-day',
+  selector: 'pa-pet-of-the-day',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,

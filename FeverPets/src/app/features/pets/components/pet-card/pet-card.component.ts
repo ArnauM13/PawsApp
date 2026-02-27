@@ -16,7 +16,7 @@ import { CardComponent } from '@shared/ui';
  * @returns The pet card component
  */
 @Component({
-  selector: 'fp-pet-card',
+  selector: 'pa-pet-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CardComponent,
@@ -27,7 +27,7 @@ import { CardComponent } from '@shared/ui';
     ImageFallbackDirective
   ],
   template: `
-    <fp-card
+    <pa-card
       class="w-full"
       [contentTemplate]="contentTemplate"
       [footerTemplate]="footerTemplate">
@@ -40,7 +40,7 @@ import { CardComponent } from '@shared/ui';
             [fpImageFallback]="logoPath"
             class="w-full h-48 object-cover rounded" />
 
-          <fp-pet-info [pet]="pet()" layout="grid" />
+          <pa-pet-info [pet]="pet()" layout="grid" />
         </div>
       </ng-template>
 
@@ -53,7 +53,7 @@ import { CardComponent } from '@shared/ui';
           </a>
         </div>
       </ng-template>
-    </fp-card>
+    </pa-card>
   `
 })
 export class PetCardComponent {

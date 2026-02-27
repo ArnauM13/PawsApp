@@ -7,7 +7,7 @@ import { APP_CONFIG } from '@core/config';
 import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
 
 @Component({
-  selector: 'fp-topbar',
+  selector: 'pa-topbar',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MenubarModule, RouterModule, TranslateModule, CommonModule, LanguageDropdownComponent],
   template: `
@@ -25,7 +25,7 @@ import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
           }
           <img
             [src]="logoPath"
-            alt="FeverPets Logo"
+            alt="PawsApp Logo"
             class="h-8 w-8 object-contain">
           <span class="font-bold text-xl">
             {{ 'APP.TITLE' | translate }}
@@ -35,7 +35,7 @@ import { LanguageDropdownComponent } from '@shared/ui/language-dropdown';
 
       <ng-template pTemplate="end">
         @if (showLanguageDropdown()) {
-          <fp-language-dropdown />
+          <pa-language-dropdown />
         }
       </ng-template>
     </p-menubar>

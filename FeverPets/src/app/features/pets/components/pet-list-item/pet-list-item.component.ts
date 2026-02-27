@@ -16,7 +16,7 @@ import { ImageFallbackDirective } from '@shared/directives';
  * @returns The pet list item component
  */
 @Component({
-  selector: 'fp-pet-list-item',
+  selector: 'pa-pet-list-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
@@ -39,7 +39,7 @@ import { ImageFallbackDirective } from '@shared/directives';
 
       <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 min-w-0">
         <div class="flex-1 min-w-0">
-          <fp-pet-info [pet]="pet()" layout="list" />
+          <pa-pet-info [pet]="pet()" layout="list" />
         </div>
 
         <div class="shrink-0">

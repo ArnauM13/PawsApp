@@ -13,7 +13,7 @@ import { calculatePage, calculateFirst, getRowsPerPage } from '@shared/utils';
 import { DataViewComponent, TopbarComponent } from '@shared/ui';
 
 @Component({
-  selector: 'fp-home',
+  selector: 'pa-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DataViewComponent,
@@ -30,11 +30,11 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
   template: `
   <div class="flex flex-col h-screen p-2">
 
-    <fp-topbar />
+    <pa-topbar />
 
-    <fp-pet-of-the-day />
+    <pa-pet-of-the-day />
 
-      <fp-data-view
+      <pa-data-view
       [dataItems]="store.pets()"
       [totalRecords]="store.total()"
       [isLoading]="store.loading()"
@@ -75,10 +75,10 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
       </ng-template>
 
       <ng-template #listItemTemplate let-pet>
-        <fp-pet-list-item [pet]="pet" />
+        <pa-pet-list-item [pet]="pet" />
       </ng-template>
       <ng-template #gridItemTemplate let-pet>
-        <fp-pet-card [pet]="pet" />
+        <pa-pet-card [pet]="pet" />
       </ng-template>
 
       <ng-template #listSkeletonTemplate>
@@ -135,7 +135,7 @@ import { DataViewComponent, TopbarComponent } from '@shared/ui';
           </div>
         </div>
       </ng-template>
-    </fp-data-view>
+    </pa-data-view>
   </div>
   `,
 })
