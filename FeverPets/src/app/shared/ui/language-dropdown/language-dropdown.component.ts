@@ -9,7 +9,7 @@ import { SelectModule } from 'primeng/select';
  * @returns The language dropdown component
  */
 @Component({
-  selector: 'fp-language-dropdown',
+  selector: 'pa-language-dropdown',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SelectModule, FormsModule],
   template: `

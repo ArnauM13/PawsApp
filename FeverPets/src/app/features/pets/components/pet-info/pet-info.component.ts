@@ -14,7 +14,7 @@ import { calculateHealth } from '@features/pets/utils';
  * @returns The pet info component
  */
 @Component({
-  selector: 'fp-pet-info',
+  selector: 'pa-pet-info',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
@@ -30,7 +30,7 @@ import { calculateHealth } from '@features/pets/utils';
       <div [class]="layout() === 'grid' ? 'flex items-start justify-between gap-2' : 'flex items-center gap-2 mb-2'">
         <h2 [class]="layout() === 'grid' ? 'text-2xl font-bold' : 'text-2xl font-bold truncate'">{{ pet().name }}</h2>
         <div class="flex items-center gap-2">
-          <fp-pet-health-badge [healthStatus]="healthStatus()" />
+          <pa-pet-health-badge [healthStatus]="healthStatus()" />
           @if (pet().number_of_lives) {
             <span class="text-xs leading-none">{{ pet().number_of_lives! | petLives }}</span>
           }

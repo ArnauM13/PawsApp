@@ -25,7 +25,7 @@ export type DataViewLayout = 'list' | 'grid';
  * @returns The data view component
  */
 @Component({
-  selector: 'fp-data-view',
+  selector: 'pa-data-view',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DataViewModule, PaginatorModule, SelectButtonModule, SelectModule, FormsModule, NgTemplateOutlet, TranslateModule],
   template: `

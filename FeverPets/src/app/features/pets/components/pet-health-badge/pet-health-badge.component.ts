@@ -11,7 +11,7 @@ import { getHealthBadgeInfo } from '@features/pets/utils';
  * @returns The pet health badge component
  */
 @Component({
-  selector: 'fp-pet-health-badge',
+  selector: 'pa-pet-health-badge',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, TranslateModule],
   template: `

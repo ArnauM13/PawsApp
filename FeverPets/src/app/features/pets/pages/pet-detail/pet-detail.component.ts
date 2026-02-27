@@ -12,7 +12,7 @@ import { ImageFallbackDirective } from '@shared/directives';
 import { TopbarComponent } from '@shared/ui';
 
 @Component({
-  selector: 'fp-pet-detail',
+  selector: 'pa-pet-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
@@ -24,7 +24,7 @@ import { TopbarComponent } from '@shared/ui';
   ],
   template: `
     <div class="flex flex-col h-screen p-2">
-      <fp-topbar [showBackButton]="true" [showLanguageDropdown]="false" (backClick)="goBack()" />
+      <pa-topbar [showBackButton]="true" [showLanguageDropdown]="false" (backClick)="goBack()" />
 
       <div class="flex-1 overflow-y-auto p-5">
         @if (isLoading()) {
@@ -45,7 +45,7 @@ import { TopbarComponent } from '@shared/ui';
               <div class="flex flex-col gap-6">
                 <div>
                   <h1 class="text-4xl font-bold mb-4">{{ pet()!.name }}</h1>
-                  <fp-pet-info [pet]="pet()!" layout="grid" />
+                  <pa-pet-info [pet]="pet()!" layout="grid" />
                 </div>
 
                 @if (pet()!.description) {

@@ -14,7 +14,7 @@ import { CardModule } from 'primeng/card';
  * @returns The card component
  */
 @Component({
-  selector: 'fp-card',
+  selector: 'pa-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CardModule, NgTemplateOutlet],
   template: `
